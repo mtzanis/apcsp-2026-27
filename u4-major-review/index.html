@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AP CSP Unit 4 Major Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    color-scheme:light;
+    --paper:#F4F6F9; --card:#FFFFFF; --ink:#1B2A3A; --muted:#5B6B7E;
+    --blue:#2B5CAD; --blue-deep:#1E3F76; --blue-wash:#E3EAF6;
+    --amber:#B97A14; --amber-wash:#F7EDD9;
+    --good:#2F7D52; --good-wash:#E1F0E7; --bad:#B54434; --bad-wash:#F6E4E0;
+    --line:#C6D2E0;
+    --kw:#1E3F76; --str:#2F7D52; --num:#B97A14; --cmt:#7A8797;
+    --display:"Bricolage Grotesque",Verdana,sans-serif;
+    --body:"Atkinson Hyperlegible","Trebuchet MS",sans-serif;
+    --mono:"IBM Plex Mono","Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(15px,1.35vw,20px);overflow:hidden}
+  button{font-family:inherit;font-size:inherit;cursor:pointer}
+
+  .deck{position:relative;height:100vh;width:100vw}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:4.2rem 5.5vw 5.2rem;overflow-y:auto}
+  .slide.active{display:flex}
+  .slide h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;text-wrap:balance;margin-bottom:1.2rem}
+  .slide h2{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.1;text-wrap:balance;margin-bottom:1rem}
+  .slide h3{font-family:var(--display);font-weight:700;font-size:1.1em;margin-bottom:.4rem}
+  .slide p{max-width:62ch;line-height:1.5;margin-bottom:.7rem}
+  .lead{font-size:1.15em}
+  .muted{color:var(--muted)}
+  .accent{color:var(--blue)}
+  strong{font-weight:700}
+  code,.mono{font-family:var(--mono)}
+  code{font-size:.92em;background:var(--blue-wash);padding:.05em .35em;border-radius:3px;color:var(--blue-deep)}
+
+  .chrome{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:.7rem 1.4rem;pointer-events:none;z-index:40}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-deep);background:var(--blue-wash);border:1px solid var(--line);padding:.3rem .65rem;border-radius:3px}
+  .timechip{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:.3rem .65rem;border-radius:3px}
+  .progress{position:fixed;bottom:0;left:0;right:0;display:flex;height:14px;z-index:40}
+  .progress .seg{flex:1;background:var(--line);margin-right:2px;opacity:.45;transition:opacity .2s;cursor:pointer;pointer-events:auto;border:none;padding:0}
+  .progress .seg.done{background:var(--blue);opacity:.85}
+  .progress .seg.now{background:var(--blue-deep);opacity:1}
+  .navbtns{position:fixed;bottom:1.4rem;right:1.4rem;display:flex;gap:.5rem;z-index:40}
+  .navbtns button,.notesbtn{background:var(--card);border:1.5px solid var(--line);border-radius:6px;width:2.6rem;height:2.6rem;font-size:1.1rem;color:var(--ink)}
+  .navbtns button:hover,.notesbtn:hover{border-color:var(--blue)}
+  .notesbtn{position:fixed;bottom:1.4rem;left:1.4rem;z-index:60;width:auto;padding:0 .8rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em}
+  .notesbtn.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+  .counter{position:fixed;bottom:1.85rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.72rem;color:var(--muted);z-index:40}
+  .enginechip{position:fixed;top:2.6rem;right:1.4rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--muted);z-index:40}
+  .enginechip.ok{color:var(--good)} .enginechip.err{color:var(--bad)}
+  :focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+  .tpanel{position:fixed;inset:auto 0 0 0;max-height:46vh;background:var(--blue-deep);color:#EEF3FB;padding:1.3rem 5.5vw 5rem;overflow-y:auto;z-index:50;display:none;border-top:4px solid var(--amber)}
+  .tpanel.open{display:block}
+  .tpanel h4{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#F0C878;margin-bottom:.6rem}
+  .tpanel p,.tpanel li{max-width:90ch;line-height:1.5;margin-bottom:.45rem;font-size:.95rem}
+  .tpanel ul{padding-left:1.2rem}
+  .tpanel code{background:rgba(255,255,255,.12);color:#FFF3D6}
+  .tnotes{display:none}
+
+  .grid{display:grid;gap:1rem;margin:.6rem 0 1rem}
+  .cols2{grid-template-columns:1fr 1fr}
+  .cols3{grid-template-columns:repeat(3,1fr)}
+  .cols4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:1rem 1.1rem}
+  .card h3{color:var(--blue-deep)}
+  .card.amber{border-color:var(--amber);background:var(--amber-wash)}
+  .card.bad{border-color:var(--bad);background:var(--bad-wash)}
+  .card.good{border-color:var(--good);background:var(--good-wash)}
+  .kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:.35rem}
+  .grid.compact{gap:.7rem}
+  .grid.compact .card{padding:.7rem .9rem}
+  .grid.compact .card p{margin-bottom:.3rem;font-size:.92em}
+
+  .reveal{position:relative;cursor:pointer}
+  .reveal .hidden-content{visibility:hidden}
+  .reveal::after{content:"click to reveal";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);background:repeating-linear-gradient(45deg,var(--blue-wash),var(--blue-wash) 8px,#EDF1F8 8px,#EDF1F8 16px);border-radius:6px}
+  .reveal.shown .hidden-content{visibility:visible}
+  .reveal.shown::after{display:none}
+
+  pre.sql{font-family:var(--mono);font-size:.86em;line-height:1.55;background:var(--card);border:1.5px solid var(--line);border-left:4px solid var(--blue);border-radius:6px;padding:.8rem 1rem;margin:.4rem 0 .9rem;overflow-x:auto;white-space:pre}
+  pre.sql .kw{color:var(--kw);font-weight:600}
+  pre.sql .str{color:var(--str)}
+  pre.sql .num{color:var(--num)}
+  pre.sql .cmt{color:var(--cmt);font-style:italic}
+  .line-reveal{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1.2rem;align-items:start;margin:.4rem 0 1rem}
+  .line-reveal .l{font-family:var(--mono);font-size:.86em;background:var(--card);border:1.5px solid var(--line);border-radius:5px;padding:.35rem .7rem;white-space:pre;cursor:pointer}
+  .line-reveal .l:hover{border-color:var(--blue)}
+  .line-reveal .l.on{border-color:var(--amber);background:var(--amber-wash)}
+  .line-reveal .m{font-size:.9em;color:var(--muted);visibility:hidden;padding-top:.4rem}
+  .line-reveal .m.on{visibility:visible;color:var(--ink)}
+
+  .dt-wrap{overflow-x:auto;margin:.5rem 0 1rem}
+  table.dt{border-collapse:collapse;font-family:var(--mono);font-size:.82em;background:var(--card);font-variant-numeric:tabular-nums}
+  table.dt caption{caption-side:top;text-align:left;font-family:var(--body);font-weight:700;padding:.3rem 0;color:var(--blue-deep)}
+  table.dt th,table.dt td{border:1px solid var(--line);padding:.4rem .7rem;text-align:left;white-space:nowrap}
+  table.dt th{background:var(--blue-wash);color:var(--blue-deep)}
+  table.dt th.pk{background:var(--amber-wash);color:var(--amber)}
+  table.dt th.fk{background:var(--good-wash);color:var(--good)}
+  td.flag{background:var(--bad-wash)}
+  td.null{color:var(--muted);font-style:italic}
+  .legend{display:flex;gap:1rem;font-size:.8em;font-family:var(--mono);margin:.2rem 0 .8rem}
+  .legend span{padding:.15rem .5rem;border-radius:3px}
+  .lg-pk{background:var(--amber-wash);color:var(--amber)}
+  .lg-fk{background:var(--good-wash);color:var(--good)}
+  .spot td{cursor:pointer}
+  .spot td.found{background:var(--bad-wash);color:var(--bad);font-weight:600;text-decoration:line-through}
+  .spot td.clean{background:var(--good-wash)}
+
+  .q-item{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.9rem 1rem;margin-bottom:.7rem}
+  .q-item .q-text{font-weight:700;margin-bottom:.6rem}
+  .q-item .q-text code{font-weight:400}
+  .q-opts{display:flex;flex-wrap:wrap;gap:.5rem}
+  .q-opts button{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:.35rem .8rem;color:var(--ink);text-align:left}
+  .q-opts button:hover{border-color:var(--blue)}
+  .q-item.answered .q-opts button{pointer-events:none;opacity:.55}
+  .q-opts button.right{background:var(--good-wash);border-color:var(--good);color:var(--good);opacity:1 !important;font-weight:700}
+  .q-opts button.wrong{background:var(--bad-wash);border-color:var(--bad);color:var(--bad);opacity:1 !important}
+  .q-why{display:none;margin-top:.55rem;font-size:.92em;color:var(--muted);border-left:3px solid var(--blue);padding-left:.7rem}
+  .q-item.answered .q-why{display:block}
+  .scorechip{display:inline-block;font-family:var(--mono);font-size:.8rem;background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:.35rem .8rem;margin-top:.3rem}
+  .quiz2{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+  .quiz2 .q-item{padding:.7rem .85rem;margin-bottom:.6rem}
+  .quiz2 .q-text{font-size:.95em;margin-bottom:.45rem}
+  .quiz2 .q-opts button{padding:.25rem .6rem;font-size:.9em}
+
+  .countdown{font-family:var(--mono);font-weight:600;font-size:clamp(3rem,7vw,5.5rem);color:var(--blue-deep);letter-spacing:.05em;font-variant-numeric:tabular-nums;line-height:1}
+  .countdown.low{color:var(--bad)}
+  .cd-ctrl{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+  .cd-ctrl button{background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:6px;padding:.35rem .8rem;font-weight:700;font-size:.9em}
+  .cd-ctrl button:hover{border-color:var(--blue)}
+
+  .agenda{width:100%;border-collapse:collapse;max-width:56rem}
+  .agenda td{padding:.42rem .8rem;border-bottom:1px solid var(--line)}
+  .agenda .t{font-family:var(--mono);font-size:.8em;color:var(--amber);white-space:nowrap}
+  .agenda .s{font-family:var(--mono);font-size:.8em;color:var(--muted);white-space:nowrap}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;padding:.2rem .6rem;border-radius:999px;border:1px solid var(--line);background:var(--card);margin:.15rem}
+  .pill.sl{border-color:var(--blue);color:var(--blue-deep);background:var(--blue-wash)}
+  .pill.hl{border-color:var(--amber);color:var(--amber);background:var(--amber-wash)}
+  .keyfooter{margin-top:auto;padding-top:1rem;font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.06em}
+
+  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:.4rem 0 1rem}
+  .ladder .card{border-top:6px solid var(--line)}
+  .ladder .card.o1{border-top-color:var(--good)}
+  .ladder .card.o2{border-top-color:var(--blue)}
+  .ladder .card.o3{border-top-color:var(--amber)}
+  .verbs{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0}
+  .verbs span{font-family:var(--mono);font-size:.78rem;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:.15rem .5rem}
+  .marks{font-family:var(--mono);font-size:.78em;color:var(--amber);white-space:nowrap}
+
+  .check{list-style:none;padding:0;columns:2;column-gap:2rem;max-width:70rem;margin:.4rem 0 1rem}
+  .check li{break-inside:avoid;padding:.22rem 0 .22rem 1.6rem;position:relative;font-size:.93em}
+  .check li::before{content:"☐";position:absolute;left:.2rem;color:var(--blue)}
+  .check li.hl::after{content:"HL";font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--amber);border:1px solid var(--amber);border-radius:999px;padding:.05rem .4rem;margin-left:.4rem;vertical-align:middle}
+
+  .erd-svg{max-width:100%;height:auto}
+  .flowline{stroke:var(--blue);stroke-width:2;fill:none}
+  .ent{fill:var(--card);stroke:var(--blue-deep);stroke-width:2}
+  .ent-title{font:700 15px var(--display);fill:var(--blue-deep)}
+  .ent-attr{font:12px var(--mono);fill:var(--ink)}
+
+  .sandbox{display:grid;grid-template-columns:minmax(15rem,1fr) 2.4fr;gap:1rem;margin:.4rem 0 1rem;align-items:start}
+  .slide.sb-slide{padding-top:3.4rem}
+  .slide.sb-slide h2{margin-bottom:.4rem}
+  .slide.sb-slide>p{margin-bottom:.3rem;font-size:.95em}
+  .sb-tasks{display:flex;flex-direction:column;gap:.5rem}
+  .sb-tasklist{display:flex;flex-wrap:wrap;gap:.4rem}
+  .sb-tasklist button{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:.3rem .65rem;font-family:var(--mono);font-size:.78rem;color:var(--ink)}
+  .sb-tasklist button.cur{border-color:var(--blue);background:var(--blue-wash);color:var(--blue-deep)}
+  .sb-tasklist button.done{border-color:var(--good);background:var(--good-wash);color:var(--good)}
+  .sb-tasklist button.hlt{border-style:dashed}
+  .sb-prompt{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.9rem 1rem}
+  .sb-prompt .kicker{margin-bottom:.3rem}
+  .sb-prompt p{margin-bottom:.4rem;font-size:.95em}
+  .sb-hint{display:none;font-size:.88em;color:var(--muted);border-left:3px solid var(--amber);padding-left:.7rem;margin-top:.5rem}
+  .sb-hint.on{display:block}
+  .sb-tools{display:flex;flex-wrap:wrap;gap:.4rem}
+  .sb-tools button{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:.3rem .7rem;font-size:.82em;color:var(--ink)}
+  .sb-tools button:hover{border-color:var(--blue)}
+  .sb-editor textarea{width:100%;min-height:13rem;font-family:var(--mono);font-size:.9em;line-height:1.5;padding:.7rem .9rem;border:1.5px solid var(--line);border-left:4px solid var(--blue);border-radius:6px;background:var(--card);color:var(--ink);resize:vertical;tab-size:2}
+  .sb-editor textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-wash)}
+  .sb-run{display:flex;gap:.5rem;align-items:center;margin:.5rem 0;flex-wrap:wrap}
+  .sb-run button{border:none;border-radius:6px;padding:.45rem 1rem;font-weight:700}
+  .sb-run .run{background:var(--blue);color:#fff}
+  .sb-run .check{background:var(--card);color:var(--blue);border:1.5px solid var(--blue)}
+  .sb-run .stat{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+  .sb-out{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.6rem .8rem;min-height:5rem;max-height:38vh;overflow:auto}
+  .sb-out .msg{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin-bottom:.4rem}
+  .sb-out .msg.err{color:var(--bad);white-space:pre-wrap}
+  .sb-out .msg.ok{color:var(--good)}
+  .sb-out .msg.warn{color:var(--amber)}
+  .sb-out table.dt{font-size:.78em}
+  .sb-schema{display:none;font-family:var(--mono);font-size:.74rem;line-height:1.6;background:var(--blue-wash);border-radius:6px;padding:.6rem .8rem;color:var(--blue-deep);white-space:pre-wrap}
+  .sb-schema.on{display:block}
+  .sb-schema b{color:var(--amber)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .slide.active{animation:fadein .25s ease}
+    @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  }
+  @media (max-width:900px){
+    .cols2,.cols3,.cols4,.quiz2,.ladder{grid-template-columns:1fr}
+    .sandbox{grid-template-columns:1fr}
+    .slide{padding:3.5rem 5vw 5rem}
+    .line-reveal{grid-template-columns:1fr}
+    .check{columns:1}
+  }
+
+  .quiz2 .q-item{padding:.6rem .8rem;margin-bottom:.5rem}
+  .quiz2 .q-text{font-size:.92em;margin-bottom:.4rem}
+  .quiz2 .q-opts button{padding:.22rem .55rem;font-size:.86em}
+  .quiz2 .q-why{font-size:.85em}
+  .slide ul li{margin-bottom:.25rem}
+
+:root{--plum:#6B4C9A; --plum-wash:#ECE6F4}
+.lay{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:.12rem .5rem;border-radius:999px;border:1px solid;white-space:nowrap}
+.lay.app{color:var(--amber);background:var(--amber-wash);border-color:var(--amber)}
+.lay.tr{color:var(--blue-deep);background:var(--blue-wash);border-color:var(--blue)}
+.lay.in{color:var(--good);background:var(--good-wash);border-color:var(--good)}
+.lay.na{color:var(--plum);background:var(--plum-wash);border-color:var(--plum)}
+.stack{display:flex;flex-direction:column;gap:.35rem;margin:.4rem 0 1rem}
+.stack .row{display:grid;grid-template-columns:12rem 1fr;gap:.8rem;align-items:center;border-radius:6px;padding:.45rem .8rem;border:1.5px solid}
+.stack .row.app{background:var(--amber-wash);border-color:var(--amber)}
+.stack .row.tr{background:var(--blue-wash);border-color:var(--blue)}
+.stack .row.in{background:var(--good-wash);border-color:var(--good)}
+.stack .row.na{background:var(--plum-wash);border-color:var(--plum)}
+.stack .row b{font-family:var(--display)}
+.stack .row span{font-size:.9em}
+
+.stepper{margin:.4rem 0 1rem}
+.st-ctrl{display:flex;gap:.5rem;align-items:center;margin:.5rem 0}
+.st-ctrl button{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:.35rem .9rem;font-weight:700;color:var(--ink)}
+.st-ctrl button:hover{border-color:var(--blue)}
+.st-ctrl .st-count{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+.stepper [data-step]{opacity:.12;transition:opacity .25s}
+.stepper [data-step].seen{opacity:1}
+.stepper [data-step].now{outline:3px solid var(--amber);outline-offset:2px;border-radius:6px}
+.stepper tr[data-step].now{outline:none;background:var(--amber-wash)}
+.st-cap{display:none;background:var(--card);border:1.5px solid var(--line);border-left:4px solid var(--amber);border-radius:6px;padding:.6rem .9rem;font-size:.95em;max-width:70ch}
+.st-cap.on{display:block}
+
+.hs{display:grid;grid-template-columns:8rem 1fr 8rem;gap:.4rem 1rem;align-items:center;max-width:40rem}
+.hs .end{background:var(--card);border:2px solid var(--blue-deep);border-radius:8px;padding:.5rem;text-align:center;font-family:var(--display);font-weight:700;color:var(--blue-deep)}
+.hs .msg{font-family:var(--mono);font-size:.85em;text-align:center;padding:.3rem;border-radius:5px}
+.hs .msg.r{background:var(--blue-wash);color:var(--blue-deep)}
+.hs .msg.l{background:var(--good-wash);color:var(--good)}
+
+.sim{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.4rem 0 .8rem}
+.sim .lane{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.7rem .9rem;min-height:9.5rem}
+.sim .lane h3{margin-bottom:.4rem}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem;margin:.3rem 0}
+.chip{font-family:var(--mono);font-size:.8rem;padding:.2rem .45rem;border-radius:4px;border:1.5px solid var(--line);background:var(--paper);white-space:pre}
+.chip.ok{border-color:var(--good);background:var(--good-wash);color:var(--good)}
+.chip.lost{border-color:var(--bad);background:var(--bad-wash);color:var(--bad);text-decoration:line-through}
+.chip.re{border-color:var(--amber);background:var(--amber-wash);color:var(--amber)}
+.simlog{font-family:var(--mono);font-size:.74rem;color:var(--muted);min-height:1.2em}
+.simresult{font-family:var(--mono);font-size:1.05rem;font-weight:600;margin-top:.4rem;white-space:pre}
+.simbtns{display:flex;gap:.5rem;flex-wrap:wrap}
+.simbtns button{border:none;border-radius:6px;padding:.45rem 1rem;font-weight:700;background:var(--blue);color:#fff}
+.simbtns button.alt{background:var(--card);color:var(--blue);border:1.5px solid var(--blue)}
+
+.wire{font-family:var(--mono);font-size:.82em;background:#1B2A3A;color:#D8E3F2;border-radius:6px;padding:.7rem .9rem;white-space:pre-wrap;word-break:break-all;min-height:4.2rem}
+.wire .hot{color:#FFB4A6;font-weight:600}
+.toggle{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;margin:.2rem 0 .5rem}
+.toggle button{border:none;background:var(--card);padding:.3rem .9rem;font-family:var(--mono);font-size:.78rem;color:var(--ink)}
+.toggle button.on{background:var(--blue-deep);color:#fff}
+.pkt{font-family:var(--mono);font-size:.82em}
+.q-item .pkt{display:block;margin-bottom:.4rem;color:var(--muted)}
+.stepper table.dt td{white-space:normal;font-family:var(--body)}
+.stepper table.dt td:first-child,.stepper table.dt td:nth-child(4){font-family:var(--mono);white-space:nowrap}
+.encap{display:flex;flex-direction:column;gap:.5rem;margin:.4rem 0 .8rem}
+.wrap2{border:2px dashed transparent;border-radius:8px;padding:.55rem .7rem;transition:border-color .25s,background .25s}
+.wrap2.seen{border-style:solid}
+.wrap2.na.seen{border-color:var(--plum);background:var(--plum-wash)}
+.wrap2.in.seen{border-color:var(--good);background:var(--good-wash)}
+.wrap2.tr.seen{border-color:var(--blue);background:var(--blue-wash)}
+.wrap2>.hdr{display:block;font-family:var(--mono);font-size:.76rem;margin-bottom:.4rem;visibility:hidden;color:var(--ink)}
+.wrap2.seen>.hdr{visibility:visible}
+.wrap2>.ftr{display:block;font-family:var(--mono);font-size:.76rem;margin-top:.4rem;visibility:hidden;text-align:right}
+.wrap2.seen>.ftr{visibility:visible}
+.payload{background:var(--card);border:1.5px solid var(--amber);border-radius:6px;padding:.5rem .7rem;font-family:var(--mono);font-size:.8rem;white-space:pre-wrap}
+.pdu{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.peer{display:grid;grid-template-columns:1fr auto 1fr;gap:.4rem .8rem;align-items:center;margin:.4rem 0 .8rem}
+.peer .p{border:1.5px solid var(--line);border-radius:6px;padding:.4rem .7rem;font-family:var(--mono);font-size:.82rem;text-align:center}
+.peer .p.app{background:var(--amber-wash);border-color:var(--amber)}
+.peer .p.tr{background:var(--blue-wash);border-color:var(--blue)}
+.peer .p.in{background:var(--good-wash);border-color:var(--good)}
+.peer .p.na{background:var(--plum-wash);border-color:var(--plum)}
+.peer .link{font-family:var(--mono);font-size:.7rem;color:var(--muted);white-space:nowrap}
+
+.dt-wrap table.dt.wrapme td,.dt-wrap table.dt.wrapme th{white-space:normal}
+.dt-wrap table.dt.wrapme td:first-child{white-space:nowrap}
+
+/* board mode: hide detail prose so nobody reads and listens at the same time */
+body.board .detail{display:none}
+.modechip{position:fixed;top:2.6rem;left:1.4rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--amber);background:var(--amber-wash);border:1px solid var(--amber);border-radius:999px;padding:.2rem .6rem;z-index:40;cursor:pointer}
+body:not(.board) .modechip{color:var(--muted);background:var(--card);border-color:var(--line)}
+.bigidea{font-family:var(--display);font-weight:700;font-size:clamp(1.05rem,2.1vw,1.45rem);line-height:1.25;color:var(--blue-deep);background:var(--blue-wash);border-left:5px solid var(--blue);border-radius:6px;padding:.7rem 1rem;margin:.4rem 0 .9rem;max-width:64ch}
+.readbtn{background:var(--card);border:1.5px solid var(--amber);color:var(--amber);border-radius:999px;padding:.3rem .9rem;font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;margin:.2rem 0}
+.readbtn.on{background:var(--amber);color:#fff}
+.srv{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.3rem 0 .8rem}
+.srv .card{border-top:6px solid var(--blue)}
+.srv .card.two{border-top-color:var(--amber)}
+.proto{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--good);background:var(--good-wash);border:1px solid var(--good);border-radius:999px;padding:.1rem .5rem}
+.readbtn{align-self:flex-start;width:auto}
+
+
+/* ===== AP CSP functions deck additions ===== */
+pre.code{font-family:var(--mono);font-size:.86em;line-height:1.5;background:var(--card);border:1.5px solid var(--line);border-left:4px solid var(--blue);border-radius:6px;padding:.7rem 1rem;margin:.3rem 0 .7rem;overflow-x:auto;white-space:pre;tab-size:2}
+pre.code.ap{border-left-color:var(--amber)}
+pre.code .kw,.tr-code .kw{color:var(--kw);font-weight:600}
+pre.code .str,.tr-code .str{color:var(--str)}
+pre.code .num,.tr-code .num{color:var(--num)}
+pre.code .cmt,.tr-code .cmt{color:var(--cmt);font-style:italic}
+.q-item pre.code{font-size:.8em;margin:.2rem 0 .5rem;padding:.45rem .7rem;font-weight:400}
+.tag{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:.1rem .5rem;border-radius:999px;border:1px solid var(--blue);color:var(--blue-deep);background:var(--blue-wash);white-space:nowrap}
+.tag.js{border-color:var(--good);color:var(--good);background:var(--good-wash)}
+.tag.ap{border-color:var(--amber);color:var(--amber);background:var(--amber-wash)}
+.card.red{border-color:var(--bad);background:var(--bad-wash)}
+.card.red h3{color:var(--bad)}
+
+.tracer{display:grid;grid-template-columns:1.25fr 1fr;gap:1rem;margin:.3rem 0 .6rem;align-items:start}
+.tr-code{font-family:var(--mono);font-size:.88em;line-height:1.6;background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.5rem 0;white-space:pre;overflow-x:auto}
+.tr-code .ln{display:block;padding:0 .9rem 0 0;border-left:5px solid transparent}
+.tr-code .ln .no{display:inline-block;width:2.4em;text-align:right;margin-right:.9em;color:var(--muted);font-size:.85em}
+.tr-code .ln.cur{background:var(--amber-wash);border-left-color:var(--amber)}
+.tr-code .ln.was{background:var(--blue-wash)}
+.tr-side{display:flex;flex-direction:column;gap:.6rem}
+.tr-box{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.55rem .8rem;min-height:3.2rem}
+.tr-box .kicker{margin-bottom:.2rem}
+.tr-console{font-family:var(--mono);font-size:.88em;white-space:pre-wrap;background:#1B2A3A;color:#E4ECF7;border-radius:5px;padding:.45rem .7rem;min-height:4.5rem}
+.tr-vars{font-family:var(--mono);font-size:.86em}
+.tr-vars .v{display:inline-block;border:1.5px solid var(--line);border-radius:5px;padding:.1rem .5rem;margin:.15rem .3rem .15rem 0;background:var(--paper)}
+.tr-vars .v.loc{border-color:var(--amber);background:var(--amber-wash)}
+.tr-vars .v b{color:var(--blue-deep)}
+.tr-note{border-left:4px solid var(--amber);font-size:.95em}
+
+.machine{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.3rem 0 .6rem;align-items:start}
+.machine select{font-family:var(--mono);font-size:.95em;padding:.25rem .4rem;border:1.5px solid var(--blue);border-radius:5px;background:var(--card);color:var(--ink)}
+.machine .call{font-family:var(--mono);font-size:1.15em;background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.7rem .9rem;margin:.5rem 0}
+.machine .arg{background:var(--amber-wash);border:1.5px solid var(--amber);border-radius:4px;padding:0 .3em;color:var(--amber);font-weight:600}
+.machine .par{background:var(--blue-wash);border:1.5px solid var(--blue);border-radius:4px;padding:0 .3em;color:var(--blue-deep);font-weight:600}
+.cake{display:flex;flex-direction:column;align-items:center;gap:3px;margin:.6rem 0;min-height:7rem;justify-content:flex-end}
+.cake .tier{height:1.3rem;border-radius:5px;border:1.5px solid rgba(0,0,0,.25)}
+
+.shapes{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:.3rem 0 .7rem}
+.shapes .card{padding:.6rem .8rem}
+.shapes pre.code{font-size:.74em;padding:.4rem .6rem;margin:.3rem 0 0}
+table.dt.two td{white-space:pre;vertical-align:top}
+table.dt.two td:first-child{font-family:var(--body);white-space:normal}
+table.dt.map td,table.dt.map th{white-space:normal;font-family:var(--body);vertical-align:top}
+table.dt.map td:nth-child(2),table.dt.map td:nth-child(3){font-family:var(--mono);font-size:.92em;white-space:nowrap}
+
+.sb-editor textarea{min-height:17rem;white-space:pre;overflow:auto}
+.sb-expect{font-family:var(--mono);font-size:.82em;background:#1B2A3A;color:#E4ECF7;border-radius:5px;padding:.4rem .65rem;white-space:pre-wrap;margin:.3rem 0}
+.sb-out .con{font-family:var(--mono);font-size:.88em;white-space:pre-wrap;background:#1B2A3A;color:#E4ECF7;border-radius:5px;padding:.45rem .7rem;margin-bottom:.4rem;min-height:2.2rem}
+.sb-out .res{font-size:.88em;margin:.15rem 0;padding-left:1.4rem;position:relative}
+.sb-out .res::before{position:absolute;left:.1rem;font-weight:700}
+.sb-out .res.ok{color:var(--good)} .sb-out .res.ok::before{content:"✓"}
+.sb-out .res.no{color:var(--bad)} .sb-out .res.no::before{content:"✗"}
+.sb-out .big{font-family:var(--display);font-weight:700;margin-top:.3rem}
+.sb-prompt pre.code{font-size:.8em}
+.sb-answer{display:none}
+@media (max-width:900px){.tracer,.machine,.shapes{grid-template-columns:1fr}}
+@media print{.slide{display:flex !important;position:static;page-break-after:always;height:auto}.deck{height:auto}body{overflow:visible}}
+
+.sb-run .chk{background:var(--card);color:var(--blue);border:1.5px solid var(--blue)}
+.sb-out .con.scr{background:#22364D}
+.scorechip{vertical-align:middle;margin-left:.6rem;font-weight:400}
+.slide.sb-slide{padding-top:4.4rem}
+@media (max-width:900px){.slide,.slide.sb-slide{padding-top:4.8rem}}
+
+.q-opts button.sel{border-color:var(--blue);background:var(--blue-wash);color:var(--blue-deep);font-weight:700}
+
+.edchip{position:fixed;top:2.6rem;right:1.4rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.2rem .6rem;z-index:40}
+.edchip.t{color:#fff;background:var(--blue-deep);border-color:var(--blue-deep)}
+
+.sb-model{display:none;background:var(--good-wash);border:1.5px solid var(--good);border-radius:8px;padding:.6rem .8rem;margin:.5rem 0}
+.sb-model.on{display:block}
+.sb-model pre.code{border-left-color:var(--good);max-height:40vh;overflow:auto;margin:.2rem 0 .5rem}
+
+/* ===== Unit 4 Major review additions: save chip, sign in, question sets, progress board ===== */
+.chrome{gap:.6rem}
+.savechip{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:.3rem .65rem;border-radius:999px;margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.savechip.ok{color:var(--good);border-color:var(--good);background:var(--good-wash)}
+.savechip.warn{color:var(--amber);border-color:var(--amber);background:var(--amber-wash)}
+
+.signin{max-width:62rem;border-color:var(--blue);margin:.2rem 0 .9rem}
+.si-row{display:flex;flex-wrap:wrap;gap:.7rem;align-items:flex-end}
+.si-row label{display:flex;flex-direction:column;gap:.2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.si-row input,.si-row select{font-family:var(--body);font-size:1rem;padding:.45rem .6rem;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);min-width:9rem}
+.si-row select{min-width:6rem}
+.si-row button{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:.55rem 1.3rem;font-weight:700}
+.si-row button:disabled{opacity:.5}
+.slide p.si-msg{margin:.6rem 0 0;font-size:.92em;color:var(--muted);max-width:none}
+.slide p.si-msg.warn{color:var(--bad);font-weight:700}
+
+.qset{display:flex;flex-direction:column;gap:.6rem;max-width:68rem;width:100%}
+.qs-strip{display:flex;flex-wrap:wrap;gap:.35rem}
+.qs-strip button{width:2.2rem;height:2.2rem;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--muted);font-family:var(--mono);font-size:.8rem;font-variant-numeric:tabular-nums}
+.qs-strip button.ans{background:var(--blue-wash);border-color:var(--blue);color:var(--blue-deep);font-weight:600}
+.qs-strip button.right{background:var(--good-wash);border-color:var(--good);color:var(--good);font-weight:600}
+.qs-strip button.wrong{background:var(--bad-wash);border-color:var(--bad);color:var(--bad);font-weight:600}
+.qs-strip button.cur{box-shadow:0 0 0 3px var(--amber)}
+.qs-card{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:1rem 1.2rem}
+.qs-stem{font-weight:700;font-size:1.05em;line-height:1.4;margin-bottom:.5rem;max-width:70ch}
+.qs-stem code{font-weight:400}
+.qs-card pre.code{max-height:42vh;overflow:auto}
+.qs-opts{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.4rem}
+.qs-opt{display:flex;gap:.7rem;align-items:flex-start;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:.55rem .8rem;color:var(--ink);line-height:1.4;min-width:0}
+.qs-opt:hover:not(:disabled){border-color:var(--blue)}
+.qs-opt .let{font-family:var(--mono);font-weight:600;color:var(--blue-deep);background:var(--blue-wash);border-radius:4px;padding:0 .45rem;flex:none}
+.qs-opt .txt{min-width:0;overflow-wrap:anywhere}
+.qs-opt .txt code{background:none;padding:0;color:inherit;font-size:.9em}
+.qs-opt.sel{border-color:var(--blue);background:var(--blue-wash);font-weight:700}
+.qs-opt.sel .let{background:var(--blue);color:#fff}
+.qs-opt:disabled{cursor:default;opacity:.6}
+.qs-opt.right{border-color:var(--good);background:var(--good-wash);color:var(--good);opacity:1;font-weight:700}
+.qs-opt.right .let{background:var(--good);color:#fff}
+.qs-opt.wrong{border-color:var(--bad);background:var(--bad-wash);color:var(--bad);opacity:1}
+.qs-opt.wrong .let{background:var(--bad);color:#fff}
+.qs-why{margin-top:.7rem;border-left:4px solid var(--blue);padding:.2rem 0 .2rem .8rem;line-height:1.5;max-width:75ch}
+.slide p.qs-note{margin:.5rem 0 0;font-size:.88em}
+.qs-bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.qs-bar button{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:.4rem .9rem;color:var(--ink)}
+.qs-bar button:hover:not(:disabled){border-color:var(--blue)}
+.qs-stat{font-family:var(--mono);font-size:.78rem;color:var(--muted);margin:0 .4rem}
+.qs-bar .qs-submit{margin-left:auto;background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.qs-bar .qs-submit:disabled{background:var(--card);border-color:var(--line);color:var(--muted);font-weight:400;cursor:default}
+.qs-bar .qs-submit.armed{background:var(--amber);border-color:var(--amber)}
+.qs-bar .qs-peek{border-color:var(--amber);color:var(--amber)}
+.qs-result:empty{display:none}
+.qs-result{background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:.8rem 1.1rem}
+.qs-score{font-family:var(--display);font-size:1.5em;color:var(--blue-deep);margin-bottom:.3rem}
+.qs-miss{display:flex;flex-wrap:wrap;gap:.4rem}
+.qs-miss button{background:var(--bad-wash);border:1px solid var(--bad);color:var(--bad);border-radius:999px;padding:.2rem .7rem;font-size:.85em}
+#results table.dt{font-family:var(--body);font-size:.95em;min-width:min(46rem,100%)}
+#results table.dt td{white-space:normal}
+table.dt.two td:nth-child(2),table.dt.two td:nth-child(3){font-family:var(--mono)}
+@media (max-width:900px){.qs-opts{grid-template-columns:1fr}.savechip{max-width:38vw}}
+</style>
+</head>
+<body data-startmode="detail">
+<div class="chrome">
+  <span class="eyebrow" id="eyebrow">AP CSP · Unit 4 Major review</span>
+  <span class="savechip" id="savechip"></span>
+  <span class="timechip" id="timechip"></span>
+</div>
+<div class="edchip">STUDENT EDITION</div>
+<div class="counter" id="counter"></div>
+<div class="navbtns">
+  <button id="prevbtn" title="Previous slide (←)">←</button>
+  <button id="nextbtn" title="Next slide (→)">→</button>
+</div>
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+<!-- ============ 1 START ============ -->
+<section class="slide" data-section="Start" data-time="3 min">
+  <p class="kicker">AP Computer Science Principles · Practice before the Unit 4 Major Assessment</p>
+  <h1>Variables. Conditionals.<br><span class="accent">Functions.</span></h1>
+  <div class="bigidea">60 questions and 19 coding tasks. Everything you answer is saved as you go. The answers to a set open when you have finished the set.</div>
+  <div class="card signin" id="signin">
+    <h3>Start here: who are you?</h3>
+    <div class="si-row">
+      <label for="si-first">First name<input id="si-first" autocomplete="off"></label>
+      <label for="si-last">Last name<input id="si-last" autocomplete="off"></label>
+      <label for="si-period">Period<select id="si-period"><option value="">Choose</option><option>B</option><option>C</option><option>G</option></select></label>
+      <button id="si-go">Start</button>
+    </div>
+    <p class="si-msg" id="si-msg"></p>
+  </div>
+  <div class="detail">
+    <table class="agenda">
+      <tr><td class="t">Part 1</td><td>Variables: a reminder, Set 1 (12 questions), Sandbox A (5 tasks)</td><td class="s">Unit 4 · L1 to L4</td></tr>
+      <tr><td class="t">Part 2</td><td>Conditionals: a reminder, Set 2 (12 questions), Sandbox B (5 tasks)</td><td class="s">Unit 4 · L5 to L8</td></tr>
+      <tr><td class="t">Part 3</td><td>Functions: a reminder, Set 3 (10 questions), Sandbox C (4 tasks)</td><td class="s">Unit 4 · L9 to L11</td></tr>
+      <tr><td class="t">Part 4</td><td>Parameters and return: a reminder, Set 4 (12 questions), Sandbox D (5 tasks)</td><td class="s">Unit 7 · L1 and L2</td></tr>
+      <tr><td class="t">Part 5</td><td>Set 5: 14 mixed questions, then your progress board and revision list</td><td class="s">everything</td></tr>
+    </table>
+    <div class="card red" style="max-width:62rem"><h3>Read this first: this is practice, not the test</h3><p>These are Mr. Tzanis's practice questions, written as if I had to sit the assessment myself. They are <strong>examples of the kind of question</strong> you could meet. The assessment has different programs, different numbers and different wording. What is fixed is the scope on the next slide.</p></div>
+  </div>
+  <p class="keyfooter">← → move between slides · the numbered circles move between questions</p>
+</section>
+
+<!-- ============ 2 SCOPE ============ -->
+<section class="slide" data-section="Scope" data-time="2 min">
+  <h2>What the Major Assessment can ask</h2>
+  <div class="bigidea">Everything here is something we did on Code.org, and every row is on the College Board list for the AP exam.</div>
+  <div class="dt-wrap"><table class="dt wrapme">
+    <tr><th>You should be able to</th><th>Code.org</th><th>College Board</th></tr>
+    <tr><td style="white-space:normal"><strong>Trace</strong> code that creates and updates variables holding numbers and strings</td><td>U4 L1 to L4</td><td>Topic 3.1</td></tr>
+    <tr><td style="white-space:normal">Evaluate expressions: order of operations, <strong>MOD</strong>, joining strings with +</td><td>U4 L3</td><td>Topics 3.3, 3.4</td></tr>
+    <tr><td style="white-space:normal">Evaluate <strong>Boolean expressions</strong> with AND, OR, NOT (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>)</td><td>U4 L5 to L7</td><td>Topic 3.5</td></tr>
+    <tr><td style="white-space:normal">Trace and write <strong>if</strong>, <strong>if-else</strong>, <strong>else-if chains</strong> and <strong>nested</strong> conditionals</td><td>U4 L6 to L8</td><td>Topics 3.6, 3.7</td></tr>
+    <tr><td style="white-space:normal">Tell a <strong>declaration</strong> from a <strong>call</strong>; trace a program with calls; use <strong>updateScreen</strong></td><td>U4 L9 to L11</td><td>Topic 3.12</td></tr>
+    <tr><td style="white-space:normal">Find a <strong>global versus local</strong> variable bug</td><td>U4 L3, L10</td><td>Topic 3.1</td></tr>
+    <tr><td style="white-space:normal">Use <strong>parameters</strong>, <strong>arguments</strong> and <strong>return</strong></td><td>U7 L1, L2</td><td>Topics 3.12, 3.13</td></tr>
+    <tr><td style="white-space:normal">Pick out <strong>why</strong> functions help: procedural abstraction, generalizing</td><td>U4 L9, U7 L2</td><td>Topic 3.13</td></tr>
+  </table></div>
+  <div class="grid cols3 compact detail">
+    <div class="card good"><h3>In</h3><p>Variables, conditionals, functions with and without parameters, with and without return. In App Lab JavaScript and in AP pseudocode.</p></div>
+    <div class="card"><h3>Not in</h3><p>Lists, loops and traversals. Libraries. If a question needs one of those to answer, it is not on this assessment.</p></div>
+    <div class="card amber"><h3>How the answers work here</h3><p>Answer every question in a set, then lock it in. Only then do you see what was right, with an explanation for each. No peeking is the point: the test will not tell you either.</p></div>
+  </div>
+</section>
+
+<!-- ============ 3 TWO NOTATIONS ============ -->
+<section class="slide" data-section="Two notations" data-time="2 min">
+  <h2>Same ideas, two ways of writing them</h2>
+  <div class="bigidea">Before you answer, look at the label on the question: AP pseudocode or App Lab JavaScript. The single = sign means different things.</div>
+  <div class="dt-wrap"><table class="dt two">
+    <tr><th>Idea</th><th>AP pseudocode</th><th>App Lab JavaScript</th></tr>
+    <tr><td>Store a value</td><td>score ← 5</td><td>var score = 5;  then  score = 6;</td></tr>
+    <tr><td>Is it equal?</td><td>score = 5</td><td>score == 5</td></tr>
+    <tr><td>Is it not equal?</td><td>score ≠ 5</td><td>score != 5</td></tr>
+    <tr><td>Both true</td><td>a AND b</td><td>a &amp;&amp; b</td></tr>
+    <tr><td>At least one true</td><td>a OR b</td><td>a || b</td></tr>
+    <tr><td>The opposite</td><td>NOT a</td><td>!a</td></tr>
+    <tr><td>Remainder</td><td>17 MOD 5</td><td>17 % 5</td></tr>
+    <tr><td>Show something</td><td>DISPLAY(score)</td><td>console.log(score);  or  setText("id", score);</td></tr>
+    <tr><td>Declare a function</td><td>PROCEDURE area(w, h) { ... }</td><td>function area(w, h){ ... }</td></tr>
+    <tr><td>Give a value back</td><td>RETURN(w * h)</td><td>return w * h;</td></tr>
+  </table></div>
+</section>
+
+<!-- ============ 4 REMINDER VARIABLES ============ -->
+<section class="slide" data-section="Variables" data-time="3 min">
+  <p class="kicker">Reminder 1 · Unit 4 Lessons 1 to 4</p>
+  <h2>A variable holds one value. Assignment replaces it.</h2>
+  <div class="bigidea">Work out the right-hand side first, using the values the variables hold right now. Then store the result. The old value is gone.</div>
+  <div class="grid cols2">
+    <div>
+      <pre class="code">var a = 10;
+var b = 4;
+var c = a - b;
+a = c;
+b = a + b;
+console.log(a + b + c);</pre>
+    </div>
+    <div class="dt-wrap"><table class="dt">
+      <tr><th>after line</th><th>a</th><th>b</th><th>c</th></tr>
+      <tr><td>1</td><td>10</td><td></td><td></td></tr>
+      <tr><td>2</td><td>10</td><td>4</td><td></td></tr>
+      <tr><td>3</td><td>10</td><td>4</td><td>6</td></tr>
+      <tr><td>4</td><td>6</td><td>4</td><td>6</td></tr>
+      <tr><td>5</td><td>6</td><td>10</td><td>6</td></tr>
+      <tr><td>6</td><td colspan="3">displays 22</td></tr>
+    </table></div>
+  </div>
+  <div class="grid cols4 compact detail">
+    <div class="card"><h3>Counter pattern</h3><p><code>score = score + 1;</code> reads the old value, adds, stores the new one.</p></div>
+    <div class="card"><h3>Strings and +</h3><p><code>"Lab" + "App"</code> is <code>"LabApp"</code>. With a string, + joins. No space unless you type one.</p></div>
+    <div class="card"><h3>MOD</h3><p>The remainder. <code>17 MOD 5</code> is 2. <code>4 MOD 6</code> is 4. Even means <code>n MOD 2 = 0</code>.</p></div>
+    <div class="card amber"><h3>Create it once</h3><p><code>var</code> creates. Put it at the top, outside every onEvent and function, or it starts again each time.</p></div>
+  </div>
+</section>
+
+<!-- ============ 5 SET 1 ============ -->
+<section class="slide" data-section="Set 1" data-time="12 min">
+  <h2>Set 1 · Variables</h2>
+  <p class="muted">12 questions. Use a trace table. You can change any answer until you lock the set.</p>
+  <div class="qset" data-set="s1"></div>
+</section>
+
+<!-- ============ 6 SANDBOX A ============ -->
+<section class="slide sb-slide" data-section="Sandbox A" data-time="10 min">
+  <h2>Sandbox A · Variables</h2>
+  <p class="muted">Real App Lab JavaScript. <strong>Run</strong> shows the console. <strong>Check my code</strong> tests your program and turns the task green. Your code is saved as you type. Ctrl or ⌘ + Enter also runs.</p>
+  <div class="sandbox" data-sb="sbA"></div>
+</section>
+
+<!-- ============ 7 REMINDER CONDITIONALS ============ -->
+<section class="slide" data-section="Conditionals" data-time="4 min">
+  <p class="kicker">Reminder 2 · Unit 4 Lessons 5 to 8</p>
+  <h2>A chain makes exactly one choice</h2>
+  <div class="bigidea">Conditions are checked from the top. The first true one runs its block, and the rest of the chain is skipped.</div>
+  <div class="tracer" data-trace="chain"></div>
+  <div class="grid cols3 compact detail">
+    <div class="card"><h3>AND, OR, NOT</h3><p>AND: both must be true. OR: at least one. NOT: flips it. In App Lab: <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>.</p></div>
+    <div class="card amber"><h3>Chain or separate ifs?</h3><p>Three separate <code>if</code> statements are three separate decisions: every condition is checked, and more than one block can run.</p></div>
+    <div class="card"><h3>Test the boundary</h3><p>For <code>&gt; 65</code>, try 65 itself. For <code>&gt;= 65</code>, try 64 and 65. Most wrong answers live exactly there.</p></div>
+  </div>
+</section>
+
+<!-- ============ 8 SET 2 ============ -->
+<section class="slide" data-section="Set 2" data-time="12 min">
+  <h2>Set 2 · Conditionals</h2>
+  <p class="muted">12 questions. Say each condition as true or false before you choose. You can change any answer until you lock the set.</p>
+  <div class="qset" data-set="s2"></div>
+</section>
+
+<!-- ============ 9 SANDBOX B ============ -->
+<section class="slide sb-slide" data-section="Sandbox B" data-time="12 min">
+  <h2>Sandbox B · Conditionals</h2>
+  <p class="muted">Each task is a small app with a button. <strong>Run</strong> clicks the button for you with the input shown in the task. <strong>Check my code</strong> also tries the values on each side of every boundary.</p>
+  <div class="sandbox" data-sb="sbB"></div>
+</section>
+
+<!-- ============ 10 REMINDER FUNCTIONS ============ -->
+<section class="slide" data-section="Functions" data-time="3 min">
+  <p class="kicker">Reminder 3 · Unit 4 Lessons 9 to 11</p>
+  <h2>Declare it once. Call it wherever you need it.</h2>
+  <div class="bigidea">A declaration runs nothing. A call, the name followed by ( ), jumps into the function, runs its body, and comes back to the line after the call.</div>
+  <div class="grid cols2">
+    <pre class="code">var score = 0;
+var lives = 3;
+
+onEvent("rightButton", "click", function(){
+  score = score + 1;
+  updateScreen();
+});
+onEvent("wrongButton", "click", function(){
+  lives = lives - 1;
+  updateScreen();
+});
+
+function updateScreen(){
+  setText("scoreLabel", score);
+  setText("livesLabel", lives);
+  if (lives == 0){
+    setText("msgLabel", "Game over");
+  }
+}</pre>
+    <div class="grid compact" style="margin:0">
+      <div class="card"><h3>The updateScreen pattern</h3><p>Each button changes its data, then calls the one function that shows it. The screen code is written once, and a change is made in one place.</p></div>
+      <div class="card amber detail"><h3>Global and local</h3><p>A variable created with <code>var</code> at the top is global: everything can read and change it. One created with <code>var</code> inside a function is local: it exists only while that function runs.</p></div>
+      <div class="card detail"><h3>What functions are for</h3><p>Less repeated code, one place to fix, a name that says what the code does. Not speed, and not memory.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 SET 3 ============ -->
+<section class="slide" data-section="Set 3" data-time="10 min">
+  <h2>Set 3 · Functions</h2>
+  <p class="muted">10 questions. For each call, note where the program jumps to and where it comes back to.</p>
+  <div class="qset" data-set="s3"></div>
+</section>
+
+<!-- ============ 12 SANDBOX C ============ -->
+<section class="slide sb-slide" data-section="Sandbox C" data-time="10 min">
+  <h2>Sandbox C · Functions</h2>
+  <p class="muted"><strong>Run</strong> shows the console and the app screen. <strong>Check my code</strong> tests your program. The model answer unlocks when your own code passes.</p>
+  <div class="sandbox" data-sb="sbC"></div>
+</section>
+
+<!-- ============ 13 REMINDER PARAMETERS ============ -->
+<section class="slide" data-section="Parameters and return" data-time="4 min">
+  <p class="kicker">Reminder 4 · Unit 7 Lessons 1 and 2</p>
+  <h2>Values go in through parameters. One value comes back through return.</h2>
+  <div class="bigidea">The call becomes the value that was returned. Then the rest of the line carries on.</div>
+  <div class="tracer" data-trace="price"></div>
+  <div class="grid cols3 compact detail">
+    <div class="card"><h3>Parameter and argument</h3><p>The parameter is the name in the declaration: <code>age</code>. The argument is the value in the call: <code>8</code>. They are matched by position.</p></div>
+    <div class="card amber"><h3>Display is not return</h3><p>A function that only displays gives nothing back. Storing its result gives <code>undefined</code>. To use a value later, return it.</p></div>
+    <div class="card"><h3>return ends the function</h3><p>The moment a return runs, the function is over. Nothing after it in that call is reached.</p></div>
+  </div>
+</section>
+
+<!-- ============ 14 SET 4 ============ -->
+<section class="slide" data-section="Set 4" data-time="12 min">
+  <h2>Set 4 · Parameters and return</h2>
+  <p class="muted">12 questions. For each call, write down which value goes into which parameter, and what comes back.</p>
+  <div class="qset" data-set="s4"></div>
+</section>
+
+<!-- ============ 15 SANDBOX D ============ -->
+<section class="slide sb-slide" data-section="Sandbox D" data-time="14 min">
+  <h2>Sandbox D · Parameters and return</h2>
+  <p class="muted">Check calls your functions with values you have not seen, so a function that only works for the example will not pass.</p>
+  <div class="sandbox" data-sb="sbD"></div>
+</section>
+
+<!-- ============ 16 SET 5 ============ -->
+<section class="slide" data-section="Set 5" data-time="15 min">
+  <h2>Set 5 · Mixed practice</h2>
+  <p class="muted">14 questions, everything together, in the style of the assessment. No notes for this one. You can change any answer until you lock the set.</p>
+  <div class="qset" data-set="s5"></div>
+</section>
+
+<!-- ============ 17 PROGRESS ============ -->
+<section class="slide" data-section="Progress" data-time="2 min">
+  <h2>Your progress board</h2>
+  <div class="bigidea">A score appears when you lock a set. The questions you missed become your revision list.</div>
+  <div id="results"></div>
+</section>
+
+<!-- ============ 18 CHECKLIST ============ -->
+<section class="slide" data-section="Checklist" data-time="3 min">
+  <h2>Can you do each of these without looking?</h2>
+  <div class="bigidea">Be honest with yourself. Anything you are not sure about goes on your revision list.</div>
+  <ul class="check">
+    <li>Trace a program with three variables using a table</li>
+    <li>Say what is left in each variable after x ← y then y ← x</li>
+    <li>Work out a MOD b, including when a is smaller than b</li>
+    <li>Say what + does with two numbers, and with a string</li>
+    <li>Evaluate a Boolean expression with AND, OR and NOT</li>
+    <li>Trace an else-if chain, and say why only one block runs</li>
+    <li>Tell a chain from three separate ifs</li>
+    <li>Trace a nested conditional</li>
+    <li>Test a condition at its boundary value</li>
+    <li>Tell a declaration from a call</li>
+    <li>Trace a program where functions change global variables</li>
+    <li>Say what the updateScreen pattern is for</li>
+    <li>Find a global versus local variable bug</li>
+    <li>Tell a parameter from an argument and match them by position</li>
+    <li>Tell display from return in any program</li>
+    <li>Say what happens to code after a return</li>
+    <li>Pick the best description of procedural abstraction</li>
+    <li>Read the same program in AP pseudocode and in App Lab JavaScript</li>
+  </ul>
+  <div class="grid cols2 compact detail">
+    <div class="card"><h3>Before the assessment</h3><p>Lock all five sets and pass all 19 tasks. For every question you missed, redo it with a trace table until you can explain the answer to someone else.</p></div>
+    <div class="card"><h3>Where else to practice</h3><p>Code.org Unit 4 Lessons 3, 7 and 10 (the practice lessons) and Unit 7 Lesson 2. Your journal definitions. The earlier functions workbench in Google Classroom.</p></div>
+  </div>
+</section>
+
+</div>
+<script>
+(function(){
+  const LABEL='AP CSP · Unit 4 Major review';
+  const slides=[...document.querySelectorAll('.slide')];
+  const progress=document.getElementById('progress');
+  const counter=document.getElementById('counter');
+  const eyebrow=document.getElementById('eyebrow');
+  const timechip=document.getElementById('timechip');
+  const tpanel=document.getElementById('tpanel');
+  const tbody=document.getElementById('tpanel-body');
+  let cur=0;
+  slides.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='seg';b.title=(s.dataset.section||'')+' · slide '+(i+1);
+    b.addEventListener('click',()=>go(i));
+    progress.appendChild(b);
+  });
+  const segs=[...progress.children];
+  function go(n){
+    if(n<0||n>=slides.length)return;
+    slides[cur].classList.remove('active');
+    cur=n;
+    slides[cur].classList.add('active');
+    slides[cur].scrollTop=0;
+    counter.textContent=(cur+1)+' / '+slides.length;
+    eyebrow.textContent=LABEL+' · '+(slides[cur].dataset.section||'');
+    timechip.textContent=slides[cur].dataset.time||'';
+    segs.forEach((s,i)=>{s.classList.toggle('done',i<cur);s.classList.toggle('now',i===cur);});
+    const notes=slides[cur].querySelector('.tnotes');
+    if(tbody)tbody.innerHTML=notes?notes.innerHTML:'<p>No notes for this slide.</p>';
+    try{history.replaceState(null,'','#'+(cur+1));}catch(e){}
+    document.dispatchEvent(new CustomEvent('slidechange',{detail:cur}));
+  }
+  document.getElementById('prevbtn').addEventListener('click',()=>go(cur-1));
+  document.getElementById('nextbtn').addEventListener('click',()=>go(cur+1));
+  const notesbtn=document.getElementById('notesbtn');
+  function toggleNotes(){if(!tpanel)return;tpanel.classList.toggle('open');notesbtn.classList.toggle('on',tpanel.classList.contains('open'));}
+  if(notesbtn)notesbtn.addEventListener('click',toggleNotes);
+  document.addEventListener('keydown',e=>{
+    if(e.target&&e.target.matches&&e.target.matches('input,textarea,select'))return;
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '&&!e.target.closest('button')){e.preventDefault();go(cur+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+    else if((e.key==='t'||e.key==='T')&&notesbtn){toggleNotes();}
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  });
+
+  document.querySelectorAll('.reveal').forEach(r=>{
+    r.addEventListener('click',()=>r.classList.add('shown'));
+    r.setAttribute('tabindex','0');
+    r.addEventListener('keydown',e=>{if(e.key==='Enter')r.classList.add('shown');});
+  });
+
+  // ---------- code coloring ----------
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function hl(text){
+    return esc(text).replace(/(\/\/[^\n]*)|("[^"\n]*")|\b(function|var|return|if|else|PROCEDURE|RETURN|DISPLAY|IF|ELSE|MOD|NOT|AND|OR|true|false)\b|\b(\d+(?:\.\d+)?)\b/g,
+      (m,c,s,k,n)=>c?'<span class="cmt">'+c+'</span>':s?'<span class="str">'+s+'</span>':k?'<span class="kw">'+k+'</span>':'<span class="num">'+n+'</span>');
+  }
+  document.querySelectorAll('pre.code').forEach(p=>{p.innerHTML=hl(p.textContent);});
+
+  // ---------- board mode ----------
+  const modeChip=document.getElementById('modechip');
+  function setMode(on){
+    document.body.classList.toggle('board',on);
+    if(modeChip)modeChip.textContent=on?'B · BOARD MODE · detail hidden':'B · DETAIL SHOWN';
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.target&&e.target.matches&&e.target.matches('input,textarea,select'))return;
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    if(e.key==='b'||e.key==='B'){setMode(!document.body.classList.contains('board'));}
+  });
+  if(modeChip)modeChip.addEventListener('click',()=>setMode(!document.body.classList.contains('board')));
+  setMode(document.body.dataset.startmode==='board');
+  document.querySelectorAll('.readbtn').forEach(b=>{
+    const secs=+(b.dataset.secs||60);let left=secs,t=null;const label=b.textContent;
+    b.addEventListener('click',()=>{
+      if(t){clearInterval(t);t=null;left=secs;b.textContent=label;b.classList.remove('on');return;}
+      setMode(false);
+      b.classList.add('on');
+      left=secs;b.textContent='Reading · '+left+'s';
+      t=setInterval(()=>{
+        left--;b.textContent='Reading · '+left+'s';
+        if(left<=0){clearInterval(t);t=null;left=secs;b.textContent=label;b.classList.remove('on');}
+      },1000);
+    });
+  });
+
+  // ---------- tracers: step through a program one line at a time ----------
+  const TRACES={
+    chain:{
+      code:[
+        'var temp = 72;',
+        'var advice = "";',
+        '',
+        'if (temp > 85){',
+        '  advice = "Stay inside";',
+        '} else if (temp > 65){',
+        '  advice = "T-shirt";',
+        '} else if (temp > 45){',
+        '  advice = "Jacket";',
+        '} else {',
+        '  advice = "Coat";',
+        '}',
+        'console.log(advice);'
+      ],
+      steps:[
+        {l:1,g:{temp:'72'},note:'A variable is created and 72 is stored in it.'},
+        {l:2,g:{temp:'72',advice:'""'},note:'A second variable, holding an empty string for now.'},
+        {l:4,g:{temp:'72',advice:'""'},note:'First condition. Is 72 > 85? False. Its block (line 5) is skipped and the chain moves to the next condition.'},
+        {l:6,g:{temp:'72',advice:'""'},note:'Second condition. Is 72 > 65? True. This is the first true condition, so this is the block that runs.'},
+        {l:7,g:{temp:'72',advice:'"T-shirt"'},note:'The assignment replaces the empty string.'},
+        {l:12,g:{temp:'72',advice:'"T-shirt"'},note:'The chain is over. Line 8 was never even checked, although 72 > 45 is also true. A chain makes exactly one choice.'},
+        {l:13,g:{temp:'72',advice:'"T-shirt"'},out:'T-shirt',note:'Sequence carries on after the chain.'}
+      ]
+    },
+    price:{
+      code:[
+        'var total = price(8) + price(30);',
+        'console.log("Total: $" + total);',
+        '',
+        'function price(age){',
+        '  var p = 12;',
+        '  if (age < 18){',
+        '    p = 8;',
+        '  }',
+        '  return p;',
+        '}'
+      ],
+      steps:[
+        {l:1,g:{total:'?'},note:'The right-hand side has two calls, so the assignment has to wait. The left call goes first, with the argument 8.'},
+        {l:4,g:{total:'?'},loc:{age:'8'},note:'The argument 8 is copied into the parameter age. A parameter is a local variable.'},
+        {l:5,g:{total:'?'},loc:{age:'8',p:'12'},note:'A local variable is created. It exists only while the function is running.'},
+        {l:6,g:{total:'?'},loc:{age:'8',p:'12'},note:'Is 8 < 18? True, so the block runs.'},
+        {l:7,g:{total:'?'},loc:{age:'8',p:'8'},note:''},
+        {l:9,g:{total:'?'},loc:{age:'8',p:'8'},note:'return ends the function and sends 8 back to the place of the call.'},
+        {l:1,g:{total:'?'},note:'price(8) has become the value 8. The locals are gone. Now the second call, with the argument 30.'},
+        {l:4,g:{total:'?'},loc:{age:'30'},note:'A fresh copy of the parameter: age is 30 this time.'},
+        {l:5,g:{total:'?'},loc:{age:'30',p:'12'},note:'A fresh p as well. Nothing is remembered from the first call.'},
+        {l:6,g:{total:'?'},loc:{age:'30',p:'12'},note:'Is 30 < 18? False, so line 7 is skipped.'},
+        {l:9,g:{total:'?'},loc:{age:'30',p:'12'},note:'return sends 12 back.'},
+        {l:1,g:{total:'20'},note:'Both calls have become values: 8 + 12. Now the assignment can finish.'},
+        {l:2,g:{total:'20'},out:'Total: $20',note:'Only now is anything displayed. The function displayed nothing: it returned a value and the main program decided what to do with it.'}
+      ]
+    }
+  };
+  document.querySelectorAll('.tracer').forEach(box=>{
+    const tr=TRACES[box.dataset.trace];if(!tr)return;
+    box.innerHTML='<div><div class="tr-code"></div><div class="st-ctrl"><button data-a="back">◀ Back</button><button data-a="next">Step ▶</button><button data-a="reset">Reset</button><span class="st-count"></span></div></div>'+
+      '<div class="tr-side"><div class="tr-box"><p class="kicker">Console</p><div class="tr-console"></div></div>'+
+      '<div class="tr-box tr-varbox"><p class="kicker">Variables</p><div class="tr-vars"></div></div>'+
+      '<div class="tr-box tr-note"></div></div>';
+    const codeEl=box.querySelector('.tr-code'),con=box.querySelector('.tr-console'),vars=box.querySelector('.tr-vars'),note=box.querySelector('.tr-note'),count=box.querySelector('.st-count');
+    codeEl.innerHTML=tr.code.map((c,i)=>'<span class="ln"><span class="no">'+(i+1)+'</span>'+hl(c)+'</span>').join('');
+    const lns=[...codeEl.querySelectorAll('.ln')];
+    const hasVars=tr.steps.some(s=>s.g||s.loc);
+    if(!hasVars)box.querySelector('.tr-varbox').style.display='none';
+    let n=0;
+    function render(){
+      lns.forEach(l=>l.classList.remove('cur','was'));
+      if(n===0){con.textContent='';vars.innerHTML='';note.textContent='Predict first: what will the console show, in what order? Then press Step.';count.textContent='step 0 / '+tr.steps.length;return;}
+      const s=tr.steps[n-1];
+      lns[s.l-1].classList.add('cur');
+      if(n>1)lns[tr.steps[n-2].l-1].classList.add('was');
+      lns[s.l-1].classList.remove('was');
+      con.textContent=tr.steps.slice(0,n).filter(x=>x.out!==undefined).map(x=>x.out).join('\n');
+      let v='';
+      if(s.g)Object.keys(s.g).forEach(k=>{v+='<span class="v"><b>'+k+'</b> = '+esc(s.g[k])+' <small>global</small></span>';});
+      if(s.loc)Object.keys(s.loc).forEach(k=>{v+='<span class="v loc"><b>'+k+'</b> = '+esc(s.loc[k])+' <small>local</small></span>';});
+      vars.innerHTML=v;
+      note.textContent='Line '+s.l+'. '+(s.note||'');
+      count.textContent='step '+n+' / '+tr.steps.length;
+    }
+    box.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
+      const a=b.dataset.a;
+      n=a==='next'?Math.min(tr.steps.length,n+1):a==='back'?Math.max(0,n-1):0;render();
+    }));
+    render();
+  });
+
+  // ---------- JavaScript sandboxes ----------
+  const RUN_SRC=`
+function __fmt(v){ if(typeof v==='string')return v; if(v===undefined)return 'undefined'; if(typeof v==='function')return '[function '+v.name+']'; try{var j=JSON.stringify(v); return j===undefined?String(v):j;}catch(e){return String(v);} }
+function __run(code,test,opts){
+  opts=opts||{};
+  var logs=[],tlogs=[],screen=[],tscreen=[],phase=0,n=0;
+  var ui={},inputs={},handlers={},k;
+  for(k in (opts.inputs||{}))inputs[k]=opts.inputs[k];
+  function rec(s){ if(++n>400) throw new Error('Too much output. Is a function calling itself forever?'); (phase?tscreen:screen).push(s); }
+  var con={log:function(){ if(++n>400) throw new Error('Too much output. Is a function calling itself forever?'); var s=Array.prototype.map.call(arguments,__fmt).join(' '); (phase?tlogs:logs).push(s);}};
+  con.warn=con.info=con.error=con.log;
+  function val(id){ return (id in ui)?ui[id]:((id in inputs)?inputs[id]:''); }
+  var A={
+    setText:function(id,t){ui[id]=__fmt(t);rec(id+': '+__fmt(t));},
+    getText:function(id){return String(val(id));},
+    getNumber:function(id){return Number(val(id));},
+    setNumber:function(id,t){ui[id]=__fmt(t);rec(id+': '+__fmt(t));},
+    setProperty:function(id,p,v){ if(p==='text'){A.setText(id,v);} else {rec(id+'.'+p+' = '+__fmt(v));} },
+    getProperty:function(id,p){ return p==='text'?String(val(id)):''; },
+    onEvent:function(id,type,fn){ if(typeof fn!=='function') throw new Error('onEvent needs a function as its third argument'); handlers[id]=fn; },
+    setScreen:function(id){rec('[screen: '+id+']');},
+    playSound:function(){},stopSound:function(){},showElement:function(){},hideElement:function(){},
+    randomNumber:function(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  };
+  function click(id){ rec('[click '+id+']'); if(handlers[id]){handlers[id]();} else {rec('  (nothing happens: no onEvent for "'+id+'")');} }
+  var T={r:[],logs:logs,screen:screen,src:code,code:code.replace(/\\/\\/[^\\n]*/g,''),
+    out:function(fn){var a=tlogs.length;fn();return tlogs.slice(a);},
+    scr:function(fn){var a=tscreen.length;fn();return tscreen.slice(a);},
+    click:click,
+    set:function(id,v){inputs[id]=v;delete ui[id];},
+    same:function(a,b){return a.length===b.length&&a.every(function(x,i){return String(x).trim()===String(b[i]).trim();});},
+    count:function(re){var m=T.code.match(re);return m?m.length:0;},
+    t:function(name,fn){var ok=false;try{ok=!!fn();}catch(e){ok=false;}T.r.push({ok:ok,name:name});}};
+  var names=Object.keys(A);
+  try{
+    var f=new Function('console','__clicks','__mark','__T',names.join(','),code+'\\n;__clicks();__mark();\\nvar T=__T;\\n'+(test||'')+'\\n;return __T.r;');
+    var args=[con,function(){(opts.clicks||[]).forEach(click);},function(){phase=1;},T].concat(names.map(function(x){return A[x];}));
+    var r=f.apply(null,args);
+    return {logs:logs,screen:screen,results:r};
+  }catch(e){ return {logs:logs,screen:screen,error:(e.name||'Error')+': '+e.message}; }
+}`;
+  const runInline=new Function(RUN_SRC+'\n;return __run;')();
+  let workerOK=true;
+  function runCode(code,test,opts){
+    return new Promise(resolve=>{
+      if(!workerOK||typeof Worker==='undefined'){resolve(runInline(code,test,opts));return;}
+      let w,done=false,timer;
+      const finish=r=>{if(done)return;done=true;clearTimeout(timer);try{w&&w.terminate();}catch(e){}resolve(r);};
+      try{
+        const blob=new Blob([RUN_SRC+'\n;self.onmessage=function(e){self.postMessage(__run(e.data.code,e.data.test,e.data.opts));};'],{type:'text/javascript'});
+        w=new Worker(URL.createObjectURL(blob));
+      }catch(e){workerOK=false;resolve(runInline(code,test,opts));return;}
+      w.onmessage=e=>finish(e.data);
+      w.onerror=e=>{e.preventDefault&&e.preventDefault();workerOK=false;finish(runInline(code,test,opts));};
+      timer=setTimeout(()=>finish({logs:[],screen:[],error:'Timeout: your program ran for more than 3 seconds, so it was stopped. Is a function calling itself forever?'}),3000);
+      w.postMessage({code:code,test:test,opts:opts||{}});
+    });
+  }
+  function friendly(msg){
+    let tip='';
+    if(/SyntaxError/.test(msg))tip='Check your brackets ( ) { } and your quotes: every one that opens must close. Check that each function starts with the word function.';
+    else if(/is not defined/.test(msg))tip='The computer does not know that name. Check spelling and capital letters. If it is a variable made with var inside a function, it only exists inside that function.';
+    else if(/is not a function/.test(msg))tip='You are calling something that is not a function. Check the name and the capital letters.';
+    else if(/call stack/.test(msg))tip='A function is calling itself forever.';
+    return msg+(tip?'\n→ '+tip:'');
+  }
+
+  // ---------- saved state: every answer and every line of code lives in one object ----------
+  const TEACHER=false;
+  const SYNC_URL=TEACHER?'':"https://script.google.com/macros/s/AKfycbyM7RQUqA8mVlRsYC69c5sMrCtV_0IjW4FLsfq9NLWgxZjx-ztD6IRxAgb00RrWX8iNjQ/exec";
+  const NS=TEACHER?'apcsp-u4major-t-':'apcsp-u4major-';
+  const QSETS={"s1": {"title": "Variables", "qs": [{"id": "v1", "lang": "ap", "skill": "Tracing assignments", "stem": "What is displayed as a result of running the code segment?", "code": "a ← 3\nb ← a + 2\na ← b * 2\nb ← a - b\nDISPLAY(a)\nDISPLAY(b)", "opts": ["6 5", "10 7", "10 5", "3 5"], "pick": 1}, {"id": "v2", "lang": "js", "skill": "Counter pattern", "stem": "What is displayed in the console?", "code": "var score = 5;\nscore = score + 3;\nscore = score * 2;\nconsole.log(score);", "opts": ["16", "13", "11", "10"], "pick": 1}, {"id": "v3", "lang": "ap", "skill": "Assignment copies a value", "stem": "A programmer wants to exchange the values of x and y. What is displayed?", "code": "x ← 5\ny ← 8\nx ← y\ny ← x\nDISPLAY(x)\nDISPLAY(y)", "opts": ["8 5", "5 8", "5 5", "8 8"], "pick": 1}, {"id": "v4", "lang": "ap", "skill": "MOD", "stem": "What is the value of result after the statement runs?", "code": "result ← (17 MOD 5) + (4 MOD 6)", "opts": ["2", "6", "5", "3"], "pick": 1}, {"id": "v5", "lang": "js", "skill": "Strings and +", "stem": "What is displayed in the console?", "code": "var first = \"App\";\nvar second = \"Lab\";\nvar word = second + first;\nword = word + \"!\";\nconsole.log(word);", "opts": ["AppLab!", "LabApp!", "Lab App!", "second + first!"], "pick": 1}, {"id": "v6", "lang": "ap", "skill": "Order of operations", "stem": "What is the value of x after the statement runs?", "code": "x ← 2 + 3 * 4 - 6 / 2", "opts": ["7", "4", "17", "11"], "pick": 1}, {"id": "v7", "lang": "", "skill": "What a variable is", "stem": "Which <strong>two<\/strong> statements about variables are true?", "code": "", "opts": ["A variable holds one value at a time.", "When a new value is assigned, the variable keeps the old value as well.", "The value of a variable can change while the program runs.", "Using a longer variable name makes the program use more memory."], "pick": 2}, {"id": "v8", "lang": "js", "skill": "Where a variable is created", "stem": "The label is supposed to count the clicks: 1, 2, 3 and so on. Instead it shows 1 after every click. Why?", "code": "onEvent(\"upButton\", \"click\", function(){\n  var clicks = 0;\n  clicks = clicks + 1;\n  setText(\"countLabel\", clicks);\n});", "opts": ["setText cannot display a number.", "The variable clicks is created inside the onEvent, so every click creates it again with the value 0.", "clicks = clicks + 1 is not a valid statement.", "The onEvent only runs for the first click."], "pick": 1}, {"id": "v9", "lang": "ap", "skill": "MOD in context", "stem": "A bakery packs cookies in boxes of 12. The variable cookies holds the number of cookies baked. Which expression gives the number of cookies <strong>left over<\/strong> after as many boxes as possible are filled?", "code": "", "opts": ["<code>cookies MOD 12<\/code>", "<code>12 MOD cookies<\/code>", "<code>cookies / 12<\/code>", "<code>cookies - 12<\/code>"], "pick": 1}, {"id": "v10", "lang": "js", "skill": "Tracing three variables", "stem": "What is displayed in the console?", "code": "var a = 10;\nvar b = 4;\nvar c = a - b;\na = c;\nb = a + b;\nconsole.log(a + b + c);", "opts": ["20", "22", "16", "26"], "pick": 1}, {"id": "v11", "lang": "ap", "skill": "Assignment copies a value", "stem": "What is displayed as a result of running the code segment?", "code": "temp ← 70\ntemp ← temp + 5\nold ← temp\ntemp ← temp - 20\nDISPLAY(old)", "opts": ["55", "70", "75", "50"], "pick": 1}, {"id": "v12", "lang": "js", "skill": "Text versus number input", "stem": "A user types 15 in the box. The program is meant to show 16 but shows 151. Which change fixes it?", "code": "var age = getText(\"ageInput\");\nsetText(\"nextLabel\", age + 1);", "opts": ["Change + to *", "Put the 1 in quotes: \"1\"", "Rename the variable to ageNumber", "Use getNumber(\"ageInput\") so that age is a number"], "pick": 1}]}, "s2": {"title": "Conditionals", "qs": [{"id": "c1", "lang": "ap", "skill": "Boolean expressions", "stem": "x is 7 and y is 10. Which expression evaluates to <strong>true<\/strong>?", "code": "", "opts": ["<code>(x &gt; 5) AND (y &lt; 10)<\/code>", "<code>(x = 7) AND (y ≥ 10)<\/code>", "<code>NOT (x &lt; 10)<\/code>", "<code>(x &gt; 7) OR (y &lt; 10)<\/code>"], "pick": 1}, {"id": "c2", "lang": "js", "skill": "if, else-if, else chain", "stem": "What is displayed in the console?", "code": "var temp = 55;\nif (temp > 80){\n  console.log(\"Hot\");\n} else if (temp > 60){\n  console.log(\"Warm\");\n} else if (temp > 40){\n  console.log(\"Cool\");\n} else {\n  console.log(\"Cold\");\n}", "opts": ["Hot", "Warm", "Cool", "Cold"], "pick": 1}, {"id": "c3", "lang": "js", "skill": "Separate ifs versus a chain", "stem": "What is displayed in the console?", "code": "var score = 85;\nvar msg = \"\";\nif (score >= 60){\n  msg = \"Pass\";\n}\nif (score >= 80){\n  msg = \"Merit\";\n}\nif (score >= 90){\n  msg = \"Distinction\";\n}\nconsole.log(msg);", "opts": ["Distinction", "PassMerit", "Pass", "Merit"], "pick": 1}, {"id": "c4", "lang": "ap", "skill": "MOD inside a condition", "stem": "For which value of n does the code segment display \"yes\"?", "code": "IF ((n MOD 2 = 0) AND (n > 10))\n{\n  DISPLAY(\"yes\")\n}", "opts": ["8", "11", "12", "15"], "pick": 1}, {"id": "c5", "lang": "ap", "skill": "Nested conditionals", "stem": "age is 12 and hasTicket is true. What is displayed?", "code": "IF (age ≥ 13)\n{\n  IF (hasTicket)\n  {\n    DISPLAY(\"Enter\")\n  }\n  ELSE\n  {\n    DISPLAY(\"Buy a ticket\")\n  }\n}\nELSE\n{\n  DISPLAY(\"Too young\")\n}", "opts": ["Too young", "Enter", "Buy a ticket", "Nothing is displayed"], "pick": 1}, {"id": "c6", "lang": "ap", "skill": "Equivalent Boolean expressions", "stem": "Which <strong>two<\/strong> expressions are equivalent to <code>NOT (score &lt; 50)<\/code> for every value of score?", "code": "", "opts": ["<code>score &gt; 50<\/code>", "<code>score ≥ 50<\/code>", "<code>score ≤ 50<\/code>", "<code>(score &gt; 50) OR (score = 50)<\/code>"], "pick": 2}, {"id": "c7", "lang": "js", "skill": "Logical operators with nesting", "stem": "What is displayed in the console?", "code": "var day = \"Sat\";\nvar raining = true;\nif (day == \"Sat\" || day == \"Sun\"){\n  if (!raining){\n    console.log(\"Park\");\n  } else {\n    console.log(\"Movies\");\n  }\n} else {\n  console.log(\"School\");\n}", "opts": ["Park", "Movies", "School", "Park then Movies"], "pick": 1}, {"id": "c8", "lang": "ap", "skill": "Writing a condition", "stem": "A store gives a discount to members whose total is at least 50. A customer with a coupon gets the discount no matter what. Which expression can replace &lt;MISSING CONDITION&gt;?", "code": "IF (<MISSING CONDITION>)\n{\n  DISPLAY(\"Discount\")\n}", "opts": ["<code>member AND (total ≥ 50 OR hasCoupon)<\/code>", "<code>member OR total ≥ 50 OR hasCoupon<\/code>", "<code>(member OR hasCoupon) AND total ≥ 50<\/code>", "<code>(member AND total ≥ 50) OR hasCoupon<\/code>"], "pick": 1}, {"id": "c9", "lang": "js", "skill": "Order of conditions", "stem": "score is 95. The programmer expects Gold. What is displayed?", "code": "if (score >= 60){\n  console.log(\"Bronze\");\n} else if (score >= 75){\n  console.log(\"Silver\");\n} else if (score >= 90){\n  console.log(\"Gold\");\n} else {\n  console.log(\"None\");\n}", "opts": ["Gold", "Silver", "Bronze", "None"], "pick": 1}, {"id": "c10", "lang": "", "skill": "How a chain runs", "stem": "Which statement is true about an IF, ELSE IF, ELSE chain?", "code": "", "opts": ["Exactly one block runs: the first whose condition is true, or the ELSE block if none is true.", "Every block whose condition is true runs.", "The ELSE block always runs last.", "The conditions are checked from the bottom up."], "pick": 1}, {"id": "c11", "lang": "js", "skill": "Variables changed inside a conditional", "stem": "What is displayed in the console?", "code": "var lives = 3;\nvar score = 40;\nif (score > 50){\n  lives = lives + 1;\n} else {\n  lives = lives - 1;\n}\nif (lives < 3){\n  score = score + 10;\n}\nconsole.log(lives + \" \" + score);", "opts": ["4 40", "2 40", "3 50", "2 50"], "pick": 1}, {"id": "c12", "lang": "ap", "skill": "Two conditionals in sequence", "stem": "What is displayed as a result of running the code segment?", "code": "x ← 15\nIF (x MOD 3 = 0)\n{\n  x ← x + 1\n}\nIF (x MOD 2 = 0)\n{\n  x ← x / 2\n}\nDISPLAY(x)", "opts": ["8", "15", "16", "7.5"], "pick": 1}]}, "s3": {"title": "Functions", "qs": [{"id": "f1", "lang": "js", "skill": "Order of execution with calls", "stem": "What is displayed in the console, in order?", "code": "console.log(\"A\");\nshow();\nconsole.log(\"B\");\nshow();\n\nfunction show(){\n  console.log(\"C\");\n  console.log(\"D\");\n}", "opts": ["A B C D", "A C D B", "A C D B C D", "C D A C D B C D"], "pick": 1}, {"id": "f2", "lang": "js", "skill": "Declaration versus call", "stem": "A function named cheer has been declared. Which of the following <strong>calls<\/strong> it?", "code": "", "opts": ["<code>function cheer(){<\/code>", "<code>cheer;<\/code>", "<code>var cheer = 0;<\/code>", "<code>cheer();<\/code>"], "pick": 1}, {"id": "f3", "lang": "js", "skill": "Declared but never called", "stem": "What is displayed in the console?", "code": "var x = 1;\n\nfunction bump(){\n  x = x + 10;\n}\n\nconsole.log(x);", "opts": ["1", "11", "10", "Nothing: the program has an error"], "pick": 1}, {"id": "f4", "lang": "js", "skill": "A function that changes a global variable", "stem": "What is displayed in the console?", "code": "var total = 0;\n\nfunction addTen(){\n  total = total + 10;\n}\n\naddTen();\naddTen();\ntotal = total + 1;\nconsole.log(total);", "opts": ["11", "20", "21", "1"], "pick": 1}, {"id": "f5", "lang": "", "skill": "Why use functions", "stem": "Which <strong>two<\/strong> are benefits of putting repeated code in a function?", "code": "", "opts": ["The program runs faster.", "The repeated code is written once and called wherever it is needed.", "A change or a fix is made in one place.", "The program uses less memory."], "pick": 2}, {"id": "f6", "lang": "js", "skill": "Local and global variables", "stem": "What is displayed in the console?", "code": "var msg = \"hi\";\n\nfunction change(){\n  var msg = \"bye\";\n}\n\nchange();\nconsole.log(msg);", "opts": ["bye", "hi", "hibye", "undefined"], "pick": 1}, {"id": "f7", "lang": "", "skill": "The updateScreen pattern", "stem": "Several event handlers in an app each change a variable and then call updateScreen(). What is the main reason for this pattern?", "code": "", "opts": ["It makes the app respond to clicks faster.", "setText only works when it is inside a function.", "All the code that refreshes the screen is written once, so every event handler calls the same code and a change is made in one place.", "It stops the variables from being changed by mistake."], "pick": 1}, {"id": "f8", "lang": "ap", "skill": "Procedure with a conditional", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE check()\n{\n  IF (lives = 0)\n  {\n    DISPLAY(\"Game over\")\n  }\n  ELSE\n  {\n    DISPLAY(\"Keep going\")\n  }\n}\n\nlives ← 2\ncheck()\nlives ← lives - 2\ncheck()", "opts": ["Keep going Game over", "Keep going Keep going", "Game over Game over", "Game over Keep going"], "pick": 1}, {"id": "f9", "lang": "js", "skill": "Calling without parentheses", "stem": "The programmer expects 0. What is displayed, and why?", "code": "var score = 7;\n\nfunction reset(){\n  score = 0;\n}\n\nreset;\nconsole.log(score);", "opts": ["0, because reset sets score to 0", "An error, because reset is not defined", "undefined, because reset returns nothing", "7, because reset; without parentheses does not call the function"], "pick": 1}, {"id": "f10", "lang": "js", "skill": "Tracing an app with updateScreen", "stem": "The user clicks upButton, then downButton, then upButton. What is on the screen afterwards?", "code": "var count = 5;\n\nonEvent(\"upButton\", \"click\", function(){\n  count = count + 2;\n  updateScreen();\n});\nonEvent(\"downButton\", \"click\", function(){\n  count = count - 1;\n  updateScreen();\n});\n\nfunction updateScreen(){\n  setText(\"countLabel\", count);\n  if (count > 7){\n    setText(\"msgLabel\", \"High\");\n  }\n}", "opts": ["countLabel shows 8 and msgLabel shows nothing", "countLabel shows 8 and msgLabel shows High", "countLabel shows 7 and msgLabel shows High", "countLabel shows 6 and msgLabel shows nothing"], "pick": 1}]}, "s4": {"title": "Parameters and return", "qs": [{"id": "p1", "lang": "ap", "skill": "Calling a procedure that returns", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE addBonus(points)\n{\n  RETURN(points + 10)\n}\n\nscore ← addBonus(25)\nDISPLAY(score)", "opts": ["25", "10", "35", "2510"], "pick": 1}, {"id": "p2", "lang": "js", "skill": "Parameter versus argument", "stem": "In this program, which are the <strong>arguments<\/strong>?", "code": "function area(w, h){\n  return w * h;\n}\n\nvar a = area(3, 4);", "opts": ["3 and 4", "w and h", "a", "w * h"], "pick": 1}, {"id": "p3", "lang": "js", "skill": "Arguments match by position", "stem": "What is displayed in the console?", "code": "function describe(item, qty){\n  console.log(qty + \" x \" + item);\n}\n\ndescribe(3, \"pen\");", "opts": ["3 x pen", "pen x 3", "item x qty", "An error message"], "pick": 1}, {"id": "p4", "lang": "js", "skill": "Display is not return", "stem": "What is displayed in the console?", "code": "function double(n){\n  console.log(n * 2);\n}\n\nvar r = double(4);\nconsole.log(r);", "opts": ["8 then 8", "undefined then 8", "8 only", "8 then undefined"], "pick": 1}, {"id": "p5", "lang": "ap", "skill": "return ends the procedure", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE grade(score)\n{\n  IF (score ≥ 50)\n  {\n    RETURN(\"pass\")\n  }\n  RETURN(\"fail\")\n}\n\nDISPLAY(grade(50))", "opts": ["fail", "pass fail", "pass", "Nothing is displayed"], "pick": 1}, {"id": "p6", "lang": "js", "skill": "Parameter with conditionals", "stem": "What is displayed in the console?", "code": "function price(age){\n  var p = 10;\n  if (age < 12){\n    p = p - 4;\n  }\n  if (age >= 65){\n    p = p - 3;\n  }\n  return p;\n}\n\nconsole.log(price(70) + price(8));", "opts": ["13", "14", "20", "17"], "pick": 1}, {"id": "p7", "lang": "ap", "skill": "Using a returned value", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE triple(n)\n{\n  RETURN(n * 3)\n}\n\na ← triple(2)\nb ← triple(a)\nDISPLAY(a + b)", "opts": ["24", "12", "8", "18"], "pick": 1}, {"id": "p8", "lang": "", "skill": "What parameters are for", "stem": "Which <strong>two<\/strong> statements about parameters are true?", "code": "", "opts": ["A procedure must have at least one parameter.", "Parameters let one procedure work with different values each time it is called.", "Parameters are global variables.", "The argument values are copied into the parameters in order: first to first, second to second."], "pick": 2}, {"id": "p9", "lang": "js", "skill": "Using a function that returns true or false", "stem": "isEven(n) returns true when n is even and false otherwise. Which code correctly uses it to display even when num is even?", "code": "", "opts": ["<code>if (isEven == num){ console.log(\"even\"); }<\/code>", "<code>isEven(num); console.log(\"even\");<\/code>", "<code>if (isEven(num)){ console.log(\"even\"); }<\/code>", "<code>if (isEven){ console.log(\"even\"); }<\/code>"], "pick": 1}, {"id": "p10", "lang": "", "skill": "Procedural abstraction", "stem": "A programmer uses a teammate's procedure calcTax(amount) correctly without ever reading the code inside it. Which statement best explains why that is possible?", "code": "", "opts": ["Procedures always run faster than code written without them.", "The teammate's procedure uses global variables.", "Parameters make the program shorter.", "A procedure can be used by knowing only what it does, its name and its parameters, not how it does it."], "pick": 1}, {"id": "p11", "lang": "js", "skill": "Parameters are local", "stem": "What is displayed in the console?", "code": "var x = 5;\n\nfunction addOne(x){\n  x = x + 1;\n  return x;\n}\n\nvar y = addOne(x);\nconsole.log(x + \" \" + y);", "opts": ["6 6", "5 6", "5 5", "6 5"], "pick": 1}, {"id": "p12", "lang": "ap", "skill": "MOD inside a procedure", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE lastDigit(n)\n{\n  RETURN(n MOD 10)\n}\n\nDISPLAY(lastDigit(473) + lastDigit(29))", "opts": ["39", "5", "12", "502"], "pick": 1}]}, "s5": {"title": "Mixed practice", "qs": [{"id": "m1", "lang": "ap", "skill": "MOD with a conditional", "stem": "What is displayed as a result of running the code segment?", "code": "n ← 23\nIF (n MOD 2 = 1)\n{\n  n ← n * 2\n}\nELSE\n{\n  n ← n + 1\n}\nn ← n MOD 10\nDISPLAY(n)", "opts": ["4", "6", "46", "3"], "pick": 1}, {"id": "m2", "lang": "js", "skill": "Function, global variable and conditional", "stem": "What is displayed in the console?", "code": "var coins = 12;\n\nfunction buy(){\n  if (coins >= 5){\n    coins = coins - 5;\n  }\n}\n\nbuy();\nbuy();\nbuy();\nconsole.log(coins);", "opts": ["7", "-3", "0", "2"], "pick": 1}, {"id": "m3", "lang": "ap", "skill": "Boolean expressions in context", "stem": "A person may drive when this expression is true. For which person is it <strong>false<\/strong>?", "code": "(age ≥ 16 AND hasPermit) OR (age ≥ 18)", "opts": ["age is 16, hasPermit is true", "age is 18, hasPermit is false", "age is 17, hasPermit is false", "age is 30, hasPermit is true"], "pick": 1}, {"id": "m4", "lang": "js", "skill": "Generalizing with a parameter", "stem": "A program has three functions, greetAna, greetBen and greetCy, that are identical except for the name they display. Which single function can replace all three?", "code": "", "opts": ["<code>function greet(name){ console.log(\"Hi \" + name); }<\/code>", "<code>function greet(){ console.log(\"Hi \" + name); }<\/code>", "<code>function greet(name){ console.log(\"Hi name\"); }<\/code>", "<code>function greet(\"Ana\"){ console.log(\"Hi Ana\"); }<\/code>"], "pick": 1}, {"id": "m5", "lang": "ap", "skill": "Return in both branches", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE fee(days)\n{\n  IF (days > 7)\n  {\n    RETURN(days * 2)\n  }\n  ELSE\n  {\n    RETURN(days * 3)\n  }\n}\n\nDISPLAY(fee(7))", "opts": ["14", "35", "7", "21"], "pick": 1}, {"id": "m6", "lang": "js", "skill": "Scope", "stem": "What happens when this program runs?", "code": "function calc(){\n  var result = 4 * 5;\n}\n\ncalc();\nconsole.log(result);", "opts": ["20 is displayed", "undefined is displayed", "An error: result is not defined, because result is local to calc", "0 is displayed"], "pick": 1}, {"id": "m7", "lang": "ap", "skill": "Reading short code segments", "stem": "Which <strong>two<\/strong> code segments display 10?", "code": "", "opts": ["<code>x ← 3<br>x ← x + 7<br>DISPLAY(x)<\/code>", "<code>x ← 20 MOD 3<br>DISPLAY(x)<\/code>", "<code>x ← 5<br>y ← x<br>x ← 10<br>DISPLAY(y)<\/code>", "<code>x ← 2 + 2 * 4<br>DISPLAY(x)<\/code>"], "pick": 2}, {"id": "m8", "lang": "js", "skill": "Chain with return", "stem": "What is displayed in the console?", "code": "function size(n){\n  if (n > 100){\n    return \"L\";\n  } else if (n > 10){\n    return \"M\";\n  }\n  return \"S\";\n}\n\nconsole.log(size(10) + size(100) + size(101));", "opts": ["MML", "SML", "SLL", "MLL"], "pick": 1}, {"id": "m9", "lang": "ap", "skill": "Finding the failing case", "stem": "The procedure is intended to return the larger of its two arguments. For which call does it return the <strong>wrong<\/strong> value?", "code": "PROCEDURE larger(a, b)\n{\n  IF (a > b)\n  {\n    RETURN(a)\n  }\n  RETURN(a)\n}", "opts": ["larger(9, 2)", "larger(5, 5)", "larger(2, 9)", "larger(7, 1)"], "pick": 1}, {"id": "m10", "lang": "js", "skill": "An app with input and a conditional", "stem": "The user types 10 in qtyInput and clicks calcButton. What does totalLabel show?", "code": "onEvent(\"calcButton\", \"click\", function(){\n  var qty = getNumber(\"qtyInput\");\n  var total = qty * 4;\n  if (qty >= 10){\n    total = total - 5;\n  }\n  setText(\"totalLabel\", \"$\" + total);\n});", "opts": ["$35", "$40", "$5", "$45"], "pick": 1}, {"id": "m11", "lang": "", "skill": "Return versus display", "stem": "Which statement best explains why a programmer would have a procedure <strong>return<\/strong> a value instead of displaying it?", "code": "", "opts": ["return makes the procedure run faster.", "A procedure that displays a value cannot have parameters.", "return shows the value on the screen and also saves it.", "The code that called the procedure can store the returned value in a variable or use it in an expression."], "pick": 1}, {"id": "m12", "lang": "ap", "skill": "Sequence matters", "stem": "What is displayed as a result of running the code segment?", "code": "x ← 4\ny ← x * 2\nx ← x + 1\nDISPLAY(x)\nDISPLAY(y)", "opts": ["5 8", "4 8", "5 10", "5 5"], "pick": 1}, {"id": "m13", "lang": "js", "skill": "Calls inside conditionals", "stem": "What is displayed in the console?", "code": "var a = 0;\n\nfunction inc(){\n  a = a + 1;\n}\n\nif (a == 0){\n  inc();\n}\nif (a == 1){\n  inc();\n}\nif (a == 1){\n  inc();\n}\nconsole.log(a);", "opts": ["1", "2", "3", "0"], "pick": 1}, {"id": "m14", "lang": "ap", "skill": "Nested conditionals in a procedure", "stem": "What is displayed as a result of running the code segment?", "code": "PROCEDURE shipping(total, member)\n{\n  IF (member)\n  {\n    IF (total ≥ 30)\n    {\n      RETURN(0)\n    }\n    ELSE\n    {\n      RETURN(2)\n    }\n  }\n  ELSE\n  {\n    IF (total ≥ 50)\n    {\n      RETURN(0)\n    }\n    RETURN(5)\n  }\n}\n\nDISPLAY(shipping(40, false) + shipping(20, true))", "opts": ["7", "5", "0", "2"], "pick": 1}]}};
+  const SANDBOXES={"sbA": {"tasks": [{"id": "a1", "title": "Counter pattern", "prompt": "<p><code>score<\/code> starts at 0. Add 10 to it and display it. Then add 5 more and display it again.<\/p><p>Use the counter pattern: the new value is worked out from the old value.<\/p>", "expect": ["10", "15"], "starter": "var score = 0;\n\n// add 10 to score, then display it\n\n// add 5 to score, then display it again\n", "hint": "score = score + 10;  then console.log(score);  The right-hand side uses the value score has now.", "test": "T.t('The console shows 10 then 15',function(){return T.same(T.logs,['10','15']);});\nT.t('You used the counter pattern (score = score + ...) twice',function(){return T.count(/score\\s*(=\\s*score\\s*\\+|\\+=)/g)>=2;});"}, {"id": "a2", "title": "Swap", "prompt": "<p>Exchange the values of <code>left<\/code> and <code>right<\/code> so the console shows banana first. You need a third variable.<\/p><p>Do not type \"apple\" or \"banana\" again.<\/p>", "expect": ["banana", "apple"], "starter": "var left = \"apple\";\nvar right = \"banana\";\n\n// swap the two values here\n\n\nconsole.log(left);\nconsole.log(right);\n", "hint": "Save one value before you overwrite it: var temp = left;  left = right;  right = temp;", "test": "T.t('The console shows banana then apple',function(){return T.same(T.logs,['banana','apple']);});\nT.t('The words apple and banana are each typed only once',function(){return T.count(/\"apple\"/g)===1&&T.count(/\"banana\"/g)===1;});\nT.t('You created a third variable',function(){return T.count(/\\bvar\\b/g)>=3;});"}, {"id": "a3", "title": "Build a message", "prompt": "<p>Create a variable called <code>message<\/code> that holds <code>Ada has 42 points<\/code>. Build it from the two variables with <code>+<\/code>. Mind the spaces.<\/p>", "expect": ["Ada has 42 points"], "starter": "var player = \"Ada\";\nvar points = 42;\n\n// create message here\n\n\nconsole.log(message);\n", "hint": "var message = player + \" has \" + points + \" points\";  The spaces live inside the quotes.", "test": "T.t('The console shows Ada has 42 points',function(){return T.same(T.logs,['Ada has 42 points']);});\nT.t('The message is built from the variables, not typed out',function(){return !/Ada has/.test(T.code)&&!/42 points/.test(T.code)&&/player/.test(T.code.split('var message')[1]||'');});"}, {"id": "a4", "title": "Hours and minutes (MOD)", "prompt": "<p>135 minutes is 2 hours and 15 minutes. Make the program work that out.<\/p><p>Create <code>leftover<\/code>, the minutes that remain after the whole hours are taken out, using <code>%<\/code> (MOD on the AP exam). Then create <code>hours<\/code> from <code>total<\/code> and <code>leftover<\/code>.<\/p>", "expect": ["2 h 15 min"], "starter": "var total = 135;\n\n// create leftover and hours here\n\n\nconsole.log(hours + \" h \" + leftover + \" min\");\n", "hint": "var leftover = total % 60;  var hours = (total - leftover) / 60;", "test": "T.t('The console shows 2 h 15 min',function(){return T.same(T.logs,['2 h 15 min']);});\nT.t('You used % to find the leftover minutes',function(){return T.count(/%/g)>=1;});\nT.t('The answers are calculated, not typed in',function(){return !/=\\s*15\\s*;/.test(T.code)&&!/=\\s*2\\s*;/.test(T.code);});"}, {"id": "a5", "title": "The counter that forgets", "prompt": "<p>The label should count the clicks: 1, 2, 3. It shows 1 every time. Fix it by moving <strong>one line<\/strong>.<\/p><p class=\"muted\">When you press Run, the sandbox clicks upButton three times for you.<\/p>", "clicks": ["upButton", "upButton", "upButton"], "expectScreen": ["[click upButton]", "countLabel: 1", "[click upButton]", "countLabel: 2", "[click upButton]", "countLabel: 3"], "starter": "onEvent(\"upButton\", \"click\", function(){\n  var clicks = 0;\n  clicks = clicks + 1;\n  setText(\"countLabel\", clicks);\n});\n", "hint": "var clicks = 0; runs on every click, so the count starts again each time. Create the variable once, above the onEvent.", "test": "T.t('The label shows 1, then 2, then 3',function(){return T.same(T.screen,['[click upButton]','countLabel: 1','[click upButton]','countLabel: 2','[click upButton]','countLabel: 3']);});\nT.t('clicks is created once',function(){return T.count(/var\\s+clicks/g)===1;});"}]}, "sbB": {"tasks": [{"id": "b1", "title": "if and else", "prompt": "<p>When the button is clicked, show <code>Jacket<\/code> in <code>adviceLabel<\/code> if the temperature is below 60. Otherwise show <code>T-shirt<\/code>.<\/p><p class=\"muted\">tempInput holds 72. Run clicks checkButton for you. Check also tries 59 and 60.<\/p>", "clicks": ["checkButton"], "inputs": {"tempInput": 72}, "expectScreen": ["[click checkButton]", "adviceLabel: T-shirt"], "starter": "onEvent(\"checkButton\", \"click\", function(){\n  var temp = getNumber(\"tempInput\");\n  // your if and else go here\n\n});\n", "hint": "if (temp < 60){ setText(\"adviceLabel\", \"Jacket\"); } else { setText(\"adviceLabel\", \"T-shirt\"); }", "test": "T.t('72 shows T-shirt',function(){return T.same(T.screen,['[click checkButton]','adviceLabel: T-shirt']);});\nT.t('59 shows Jacket',function(){return T.same(T.scr(function(){T.set('tempInput',59);T.click('checkButton');}),['[click checkButton]','adviceLabel: Jacket']);});\nT.t('60 shows T-shirt (60 is not below 60)',function(){return T.same(T.scr(function(){T.set('tempInput',60);T.click('checkButton');}),['[click checkButton]','adviceLabel: T-shirt']);});"}, {"id": "b2", "title": "A chain: museum tickets", "prompt": "<p>Show the ticket price in <code>priceLabel<\/code>:<\/p><p>under 5: <code>Free<\/code><br>5 to 17: <code>$8<\/code><br>65 or over: <code>$6<\/code><br>everyone else: <code>$12<\/code><\/p><p class=\"muted\">ageInput holds 30. Check tries the ages on each side of every boundary.<\/p>", "clicks": ["buyButton"], "inputs": {"ageInput": 30}, "expectScreen": ["[click buyButton]", "priceLabel: $12"], "starter": "onEvent(\"buyButton\", \"click\", function(){\n  var age = getNumber(\"ageInput\");\n  // your if, else if, else chain goes here\n\n});\n", "hint": "if (age < 5){ ... } else if (age < 18){ ... } else if (age >= 65){ ... } else { ... }  Each else if is only reached when everything above it was false.", "test": "T.t('30 shows $12',function(){return T.same(T.screen,['[click buyButton]','priceLabel: $12']);});\nT.t('4 shows Free and 5 shows $8',function(){return T.same(T.scr(function(){T.set('ageInput',4);T.click('buyButton');}),['[click buyButton]','priceLabel: Free'])&&T.same(T.scr(function(){T.set('ageInput',5);T.click('buyButton');}),['[click buyButton]','priceLabel: $8']);});\nT.t('17 shows $8 and 18 shows $12',function(){return T.same(T.scr(function(){T.set('ageInput',17);T.click('buyButton');}),['[click buyButton]','priceLabel: $8'])&&T.same(T.scr(function(){T.set('ageInput',18);T.click('buyButton');}),['[click buyButton]','priceLabel: $12']);});\nT.t('64 shows $12 and 65 shows $6',function(){return T.same(T.scr(function(){T.set('ageInput',64);T.click('buyButton');}),['[click buyButton]','priceLabel: $12'])&&T.same(T.scr(function(){T.set('ageInput',65);T.click('buyButton');}),['[click buyButton]','priceLabel: $6']);});"}, {"id": "b3", "title": "Both must be true", "prompt": "<p>A rider may go on the ride only when their height is at least 120 <strong>and<\/strong> their age is at least 8. Show <code>Ride<\/code> or <code>Sorry<\/code> in <code>rideLabel<\/code>.<\/p><p>Use <strong>one<\/strong> if with <code>&amp;&amp;<\/code>. No nested ifs.<\/p><p class=\"muted\">heightInput holds 130 and ageInput holds 9.<\/p>", "clicks": ["checkButton"], "inputs": {"heightInput": 130, "ageInput": 9}, "expectScreen": ["[click checkButton]", "rideLabel: Ride"], "starter": "onEvent(\"checkButton\", \"click\", function(){\n  var height = getNumber(\"heightInput\");\n  var age = getNumber(\"ageInput\");\n  // one if with &&, and an else\n\n});\n", "hint": "if (height >= 120 && age >= 8){ setText(\"rideLabel\", \"Ride\"); } else { setText(\"rideLabel\", \"Sorry\"); }", "test": "T.t('130 and 9 shows Ride',function(){return T.same(T.screen,['[click checkButton]','rideLabel: Ride']);});\nT.t('Tall enough but too young (130, 7) shows Sorry',function(){return T.same(T.scr(function(){T.set('heightInput',130);T.set('ageInput',7);T.click('checkButton');}),['[click checkButton]','rideLabel: Sorry']);});\nT.t('Old enough but too short (119, 9) shows Sorry',function(){return T.same(T.scr(function(){T.set('heightInput',119);T.set('ageInput',9);T.click('checkButton');}),['[click checkButton]','rideLabel: Sorry']);});\nT.t('Exactly 120 and 8 shows Ride',function(){return T.same(T.scr(function(){T.set('heightInput',120);T.set('ageInput',8);T.click('checkButton');}),['[click checkButton]','rideLabel: Ride']);});\nT.t('One if, using &&',function(){return T.count(/\\bif\\b/g)===1&&T.count(/&&/g)>=1;});"}, {"id": "b4", "title": "Order matters", "prompt": "<p>90 or more should get <code>Gold<\/code>, 75 or more <code>Silver<\/code>, 60 or more <code>Bronze<\/code>, anything lower <code>None<\/code>.<\/p><p>Run it first: a score of 95 gets Bronze. The conditions are correct. <strong>Fix the chain.<\/strong><\/p>", "clicks": ["medalButton"], "inputs": {"scoreInput": 95}, "expectScreen": ["[click medalButton]", "medalLabel: Gold"], "starter": "onEvent(\"medalButton\", \"click\", function(){\n  var score = getNumber(\"scoreInput\");\n  if (score >= 60){\n    setText(\"medalLabel\", \"Bronze\");\n  } else if (score >= 75){\n    setText(\"medalLabel\", \"Silver\");\n  } else if (score >= 90){\n    setText(\"medalLabel\", \"Gold\");\n  } else {\n    setText(\"medalLabel\", \"None\");\n  }\n});\n", "hint": "A chain stops at the first true condition. Test the hardest one first: 90, then 75, then 60.", "test": "T.t('95 shows Gold',function(){return T.same(T.screen,['[click medalButton]','medalLabel: Gold']);});\nT.t('90 shows Gold and 89 shows Silver',function(){return T.same(T.scr(function(){T.set('scoreInput',90);T.click('medalButton');}),['[click medalButton]','medalLabel: Gold'])&&T.same(T.scr(function(){T.set('scoreInput',89);T.click('medalButton');}),['[click medalButton]','medalLabel: Silver']);});\nT.t('75 shows Silver and 74 shows Bronze',function(){return T.same(T.scr(function(){T.set('scoreInput',75);T.click('medalButton');}),['[click medalButton]','medalLabel: Silver'])&&T.same(T.scr(function(){T.set('scoreInput',74);T.click('medalButton');}),['[click medalButton]','medalLabel: Bronze']);});\nT.t('60 shows Bronze and 59 shows None',function(){return T.same(T.scr(function(){T.set('scoreInput',60);T.click('medalButton');}),['[click medalButton]','medalLabel: Bronze'])&&T.same(T.scr(function(){T.set('scoreInput',59);T.click('medalButton');}),['[click medalButton]','medalLabel: None']);});"}, {"id": "b5", "title": "A decision inside a decision", "prompt": "<p>Plan the day in <code>planLabel<\/code>.<\/p><p>On <code>Sat<\/code> or <code>Sun<\/code>: if the weather is <code>rain<\/code> show <code>Movies<\/code>, otherwise show <code>Park<\/code>.<br>On any other day show <code>School<\/code>.<\/p><p class=\"muted\">dayInput holds Sat and weatherInput holds rain.<\/p>", "clicks": ["planButton"], "inputs": {"dayInput": "Sat", "weatherInput": "rain"}, "expectScreen": ["[click planButton]", "planLabel: Movies"], "starter": "onEvent(\"planButton\", \"click\", function(){\n  var day = getText(\"dayInput\");\n  var weather = getText(\"weatherInput\");\n  // outer decision: is it the weekend?\n  // inner decision: is it raining?\n\n});\n", "hint": "if (day == \"Sat\" || day == \"Sun\"){ if (weather == \"rain\"){ ... } else { ... } } else { ... }  Use == to compare and || for OR.", "test": "T.t('Sat with rain shows Movies',function(){return T.same(T.screen,['[click planButton]','planLabel: Movies']);});\nT.t('Sun with sun shows Park',function(){return T.same(T.scr(function(){T.set('dayInput','Sun');T.set('weatherInput','sun');T.click('planButton');}),['[click planButton]','planLabel: Park']);});\nT.t('Mon with rain shows School',function(){return T.same(T.scr(function(){T.set('dayInput','Mon');T.set('weatherInput','rain');T.click('planButton');}),['[click planButton]','planLabel: School']);});\nT.t('Sat with sun shows Park',function(){return T.same(T.scr(function(){T.set('dayInput','Sat');T.set('weatherInput','sun');T.click('planButton');}),['[click planButton]','planLabel: Park']);});"}]}, "sbC": {"tasks": [{"id": "c1", "title": "Calls in order", "prompt": "<p>Three functions are declared. Write the <strong>calls<\/strong> so the console shows the song in this order. Do not type any new <code>console.log<\/code>.<\/p>", "expect": ["Verse 1", "Chorus", "Verse 2", "Chorus", "Chorus"], "starter": "function verse1(){\n  console.log(\"Verse 1\");\n}\nfunction verse2(){\n  console.log(\"Verse 2\");\n}\nfunction chorus(){\n  console.log(\"Chorus\");\n}\n\n// your calls go here\n", "hint": "Five calls, top to bottom, in the order you want things to happen. A call is the name followed by ( ) and a semicolon.", "test": "T.t('The console shows the five lines in order',function(){return T.same(T.logs,['Verse 1','Chorus','Verse 2','Chorus','Chorus']);});\nT.t('You used calls, not extra console.log lines',function(){return T.count(/console\\.log/g)===3;});"}, {"id": "c2", "title": "updateScreen for a pet app", "prompt": "<p>Both buttons end with the same two <code>setText<\/code> lines.<\/p><p>1. Move those two lines into a function <code>updateScreen<\/code> and call it from both buttons.<br>2. Then add one thing, inside the function only: if <code>food<\/code> is greater than 6, also <code>setText(\"petLabel\", \"Full\")<\/code>.<\/p><p class=\"muted\">Run clicks feedButton, playButton, feedButton for you.<\/p>", "clicks": ["feedButton", "playButton", "feedButton"], "expectScreen": ["[click feedButton]", "foodLabel: Food: 7", "moodLabel: Mood: 5", "petLabel: Full", "[click playButton]", "foodLabel: Food: 6", "moodLabel: Mood: 8", "[click feedButton]", "foodLabel: Food: 8", "moodLabel: Mood: 8", "petLabel: Full"], "starter": "var food = 5;\nvar mood = 5;\n\nonEvent(\"feedButton\", \"click\", function(){\n  food = food + 2;\n  setText(\"foodLabel\", \"Food: \" + food);\n  setText(\"moodLabel\", \"Mood: \" + mood);\n});\n\nonEvent(\"playButton\", \"click\", function(){\n  mood = mood + 3;\n  food = food - 1;\n  setText(\"foodLabel\", \"Food: \" + food);\n  setText(\"moodLabel\", \"Mood: \" + mood);\n});\n", "hint": "function updateScreen(){ the two setText lines, then if (food > 6){ setText(\"petLabel\", \"Full\"); } }  Each onEvent changes its variables and then calls updateScreen(); food and mood are global, so the function can read them.", "test": "T.t('The app screen shows the expected lines after the three clicks',function(){return T.same(T.screen,['[click feedButton]','foodLabel: Food: 7','moodLabel: Mood: 5','petLabel: Full','[click playButton]','foodLabel: Food: 6','moodLabel: Mood: 8','[click feedButton]','foodLabel: Food: 8','moodLabel: Mood: 8','petLabel: Full']);});\nT.t('A function called updateScreen exists',function(){return typeof updateScreen==='function';});\nT.t('Each setText line is written only once',function(){return T.count(/setText\\(\\s*\"foodLabel\"/g)===1&&T.count(/setText\\(\\s*\"moodLabel\"/g)===1;});\nT.t('updateScreen is called from both buttons',function(){return T.count(/updateScreen\\s*\\(\\s*\\)/g)>=3;});"}, {"id": "c3", "title": "Out of scope", "prompt": "<p>This should show <code>3<\/code>. It crashes with <em>lives is not defined<\/em>. Run it and read the message.<\/p><p>Fix it so that <code>lives<\/code> is a <strong>global<\/strong> variable that <code>setup<\/code> sets to 3. Keep the function and the call.<\/p>", "expect": ["3"], "starter": "function setup(){\n  var lives = 3;\n}\n\nsetup();\nconsole.log(lives);\n", "hint": "Create lives once at the top of the program (var lives = 0;). Inside setup, remove the word var so the function changes the global variable instead of making a new local one.", "test": "T.t('The console shows 3',function(){return T.same(T.logs,['3']);});\nT.t('lives is created once, outside the function',function(){return T.count(/var\\s+lives/g)===1&&!/function\\s+setup\\s*\\(\\s*\\)\\s*\\{[^}]*var\\s+lives/.test(T.code);});\nT.t('Calling setup() again sets lives back to 3',function(){lives=99;setup();return lives===3;});"}, {"id": "c4", "title": "Write your own function", "prompt": "<p>Declare a function <code>resetGame<\/code>. It sets <code>score<\/code> to 0, sets <code>level<\/code> to 1 and displays <code>New game<\/code>. Then call it once, where the comment says.<\/p>", "expect": ["New game", "0 1"], "starter": "var score = 30;\nvar level = 4;\n\n// declare resetGame here\n\n\n// call it here\n\nconsole.log(score + \" \" + level);\n", "hint": "function resetGame(){ score = 0; level = 1; console.log(\"New game\"); }  No var inside: you are changing the global variables. Then the call: resetGame();", "test": "T.t('The console shows New game, then 0 1',function(){return T.same(T.logs,['New game','0 1']);});\nT.t('A function called resetGame exists',function(){return typeof resetGame==='function';});\nT.t('Calling resetGame() later resets both variables again',function(){score=50;level=9;var o=T.out(function(){resetGame();});return score===0&&level===1&&T.same(o,['New game']);});"}]}, "sbD": {"tasks": [{"id": "d1", "title": "Add a parameter", "prompt": "<p><code>sign<\/code> can only make an EXIT sign. Give it a <strong>parameter<\/strong> called <code>text<\/code> and use it, so that the two calls at the bottom make two different signs.<\/p>", "expect": ["== EXIT ==", "== CAFE =="], "starter": "function sign(){\n  console.log(\"== EXIT ==\");\n}\n\nsign(\"EXIT\");\nsign(\"CAFE\");\n", "hint": "function sign(text){ console.log(\"== \" + text + \" ==\"); }  The parameter goes in the parentheses of the declaration.", "test": "T.t('The console shows the two signs',function(){return T.same(T.logs,['== EXIT ==','== CAFE ==']);});\nT.t('sign works for a word it has never seen: sign(\"GYM\")',function(){return T.same(T.out(function(){sign(\"GYM\");}),['== GYM ==']);});"}, {"id": "d2", "title": "Display is not return", "prompt": "<p>Run it first and look at the last line of the console. <code>withTax<\/code> <strong>displays<\/strong> its answer but gives nothing back, so the main program has nothing to add up.<\/p><p>Change <code>withTax<\/code> so that it <strong>returns<\/strong> the value and displays nothing.<\/p>", "expect": ["Total: 34"], "starter": "function withTax(price){\n  console.log(price + 2);\n}\n\nvar total = withTax(10) + withTax(20);\nconsole.log(\"Total: \" + total);\n", "hint": "Replace the console.log inside the function with: return price + 2;", "test": "T.t('The console shows only: Total: 34',function(){return T.same(T.logs,['Total: 34']);});\nT.t('withTax(5) returns 7',function(){return withTax(5)===7;});\nT.t('withTax itself displays nothing',function(){return T.out(function(){withTax(1);}).length===0;});"}, {"id": "d3", "title": "ticketPrice(age)", "prompt": "<p>Write <code>ticketPrice(age)<\/code>. It <strong>returns a number<\/strong> and displays nothing:<\/p><p>under 5: 0<br>5 to 17: 8<br>65 or over: 6<br>everyone else: 12<\/p><p>The main program is written for you.<\/p>", "expect": ["Family: $32", "6"], "starter": "// declare ticketPrice here\n\n\nvar family = ticketPrice(40) + ticketPrice(40) + ticketPrice(10) + ticketPrice(3);\nconsole.log(\"Family: $\" + family);\nconsole.log(ticketPrice(70));\n", "hint": "function ticketPrice(age){ if (age < 5){ return 0; } else if (age < 18){ return 8; } else if (age >= 65){ return 6; } return 12; }", "test": "T.t('The console shows Family: $32, then 6',function(){return T.same(T.logs,['Family: $32','6']);});\nT.t('Boundaries: 4 is 0, 5 is 8, 17 is 8, 18 is 12',function(){return ticketPrice(4)===0&&ticketPrice(5)===8&&ticketPrice(17)===8&&ticketPrice(18)===12;});\nT.t('Boundaries: 64 is 12, 65 is 6',function(){return ticketPrice(64)===12&&ticketPrice(65)===6;});\nT.t('ticketPrice itself displays nothing',function(){return T.out(function(){ticketPrice(20);}).length===0;});"}, {"id": "d4", "title": "Two parameters", "prompt": "<p>Write <code>shipping(total, member)<\/code>. It returns the shipping cost as a number:<\/p><p>members (<code>member<\/code> is true): 0<br>everyone else: 0 when the total is 50 or more, otherwise 5<\/p><p><strong>Order of arguments matters.<\/strong> The calls are written for you.<\/p>", "expect": ["0", "0", "5"], "starter": "// declare shipping here\n\n\nconsole.log(shipping(20, true));\nconsole.log(shipping(60, false));\nconsole.log(shipping(49, false));\n", "hint": "function shipping(total, member){ if (member){ return 0; } if (total >= 50){ return 0; } return 5; }  You can also write one condition with ||.", "test": "T.t('The console shows 0, 0, 5',function(){return T.same(T.logs,['0','0','5']);});\nT.t('shipping(50, false) is 0 and shipping(10, false) is 5',function(){return shipping(50,false)===0&&shipping(10,false)===5;});\nT.t('shipping(1, true) is 0',function(){return shipping(1,true)===0;});\nT.t('The function has two parameters and displays nothing',function(){return shipping.length===2&&T.out(function(){shipping(5,false);}).length===0;});"}, {"id": "d5", "title": "Boss: tip calculator", "prompt": "<p>The two buttons are written for you. The input box <code>billInput<\/code> holds <strong>50<\/strong>.<\/p><p>Write <code>totalWithTip(percent)<\/code>. It reads the bill with <code>getNumber<\/code>, works out the tip (bill * percent / 100) and <strong>returns one string<\/strong> like <code>Total: $55 (tip $5)<\/code>.<\/p><p>If the bill is 0, it returns <code>Enter a bill first<\/code> instead. No <code>setText<\/code> inside the function.<\/p><p class=\"muted\">Run clicks tip10Button, then tip20Button.<\/p>", "clicks": ["tip10Button", "tip20Button"], "inputs": {"billInput": 50}, "expectScreen": ["[click tip10Button]", "totalLabel: Total: $55 (tip $5)", "[click tip20Button]", "totalLabel: Total: $60 (tip $10)"], "starter": "onEvent(\"tip10Button\", \"click\", function(){\n  setText(\"totalLabel\", totalWithTip(10));\n});\nonEvent(\"tip20Button\", \"click\", function(){\n  setText(\"totalLabel\", totalWithTip(20));\n});\n\n// percent {number} - the tip percentage, for example 10\n// return {string} - for example \"Total: $55 (tip $5)\"\n// declare totalWithTip here\n\n", "hint": "Inside the function: var bill = getNumber(\"billInput\");  if (bill == 0){ return \"Enter a bill first\"; }  var tip = bill * percent / 100;  return \"Total: $\" + (bill + tip) + \" (tip $\" + tip + \")\";  The parentheses around bill + tip make it add before it joins.", "test": "T.t('The app screen shows the two totals',function(){return T.same(T.screen,['[click tip10Button]','totalLabel: Total: $55 (tip $5)','[click tip20Button]','totalLabel: Total: $60 (tip $10)']);});\nT.t('With 200 in the box, totalWithTip(10) returns Total: $220 (tip $20)',function(){T.set('billInput',200);return totalWithTip(10)===\"Total: $220 (tip $20)\";});\nT.t('With 0 in the box, it returns Enter a bill first',function(){T.set('billInput',0);return totalWithTip(10)===\"Enter a bill first\";});\nT.t('totalWithTip puts nothing on the screen by itself',function(){T.set('billInput',50);return T.scr(function(){totalWithTip(10);}).length===0&&T.out(function(){totalWithTip(10);}).length===0;});"}]}};
+  const SECRET="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";
+  const LET='ABCD';
+  const blank=()=>({v:1,first:'',last:'',period:'',answers:{},submitted:{},code:{},done:{},updated:0});
+  let state=blank();
+  try{const raw=localStorage.getItem(NS+'state');if(raw){const s=JSON.parse(raw);if(s&&s.v===1)state=Object.assign(blank(),s);}}catch(e){}
+
+  // the key (correct options, explanations, model answers) is stored encoded and only decoded when it is needed
+  let _key=null;
+  function key(){
+    if(_key)return _key;
+    const b=atob(SECRET),k='u4-major-review',u=new Uint8Array(b.length);
+    for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i)^k.charCodeAt(i%k.length);
+    _key=JSON.parse(new TextDecoder().decode(u));
+    return _key;
+  }
+  const pickOf=q=>q.pick||1;
+  const ansOf=q=>state.answers[q.id]||[];
+  const isAnswered=q=>ansOf(q).length===pickOf(q);
+  const isCorrect=q=>ansOf(q).slice().sort().join()===key().q[q.id].a.slice().sort().join();
+  const setScore=id=>QSETS[id].qs.filter(isCorrect).length;
+  const allTasks=()=>Object.keys(SANDBOXES).reduce((a,k)=>a.concat(SANDBOXES[k].tasks),[]);
+
+  const savechip=document.getElementById('savechip');
+  function chip(text,cls){if(!savechip)return;savechip.textContent=text;savechip.className='savechip'+(cls?' '+cls:'');}
+  function sid(){
+    if(!state.first||!state.last||!state.period)return '';
+    return (state.period+'-'+state.last+'-'+state.first).toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,80);
+  }
+  function summary(){
+    const sets={},answers={};
+    Object.keys(QSETS).forEach(id=>{
+      const qs=QSETS[id].qs;
+      sets[id]={total:qs.length,answered:qs.filter(isAnswered).length,score:setScore(id),submitted:!!state.submitted[id]};
+      qs.forEach(q=>{answers[q.id]=ansOf(q).slice().sort().map(i=>LET[i]).join('');});
+    });
+    const tasks=allTasks();
+    return {sets:sets,answers:answers,tasksDone:tasks.filter(t=>state.done[t.id]).map(t=>t.id),tasksTotal:tasks.length};
+  }
+  function payload(){return JSON.stringify({action:'save',sid:sid(),first:state.first,last:state.last,period:state.period,summary:summary(),state:JSON.stringify(state)});}
+  function post(body){return fetch(SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body}).then(r=>r.json());}
+  let syncTimer=null,syncing=false,dirty=false,lsTimer=null;
+  function writeLocal(){try{localStorage.setItem(NS+'state',JSON.stringify(state));return true;}catch(e){return false;}}
+  function clock(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+  function save(){
+    state.updated=Date.now();
+    const ok=writeLocal();
+    document.dispatchEvent(new CustomEvent('statechange'));
+    if(SYNC_URL&&sid()){
+      dirty=true;chip('Saving…');
+      clearTimeout(syncTimer);syncTimer=setTimeout(push,2000);
+    }else if(!ok){chip('Could not save on this device','warn');}
+    else if(SYNC_URL){chip('Saved on this device only · add your name on slide 1','warn');}
+    else{chip('Saved on this device · '+clock(),'ok');}
+  }
+  function push(){
+    if(!SYNC_URL||!sid())return;
+    if(syncing){clearTimeout(syncTimer);syncTimer=setTimeout(push,1500);return;}
+    syncing=true;dirty=false;
+    post(payload()).then(j=>{
+      syncing=false;
+      if(!j||!j.ok)throw new Error('refused');
+      if(!dirty)chip('Saved to the class sheet · '+clock(),'ok');
+    }).catch(()=>{
+      syncing=false;dirty=true;
+      chip('Saved on this device · the class sheet did not answer, trying again','warn');
+      clearTimeout(syncTimer);syncTimer=setTimeout(push,15000);
+    });
+  }
+  window.addEventListener('pagehide',()=>{
+    writeLocal();
+    if(dirty&&SYNC_URL&&sid()&&navigator.sendBeacon){try{navigator.sendBeacon(SYNC_URL,payload());}catch(e){}}
+  });
+  if(SYNC_URL&&sid())chip('Signed in as '+state.first+' '+state.last+' · saving to the class sheet','ok');
+  else if(SYNC_URL)chip('Add your name on slide 1 so your work is saved','warn');
+  else chip(TEACHER?'Teacher copy · saved on this device only':'Your work saves automatically on this device','ok');
+
+  // ---------- sign in: a name and a period, so the work can be found again ----------
+  const si=document.getElementById('signin');
+  if(si){
+    const f=si.querySelector('#si-first'),l=si.querySelector('#si-last'),p=si.querySelector('#si-period'),go=si.querySelector('#si-go'),msg=si.querySelector('#si-msg');
+    const hasWork=s=>Object.keys(s.answers||{}).length+Object.keys(s.code||{}).length>0;
+    function show(){
+      f.value=state.first;l.value=state.last;p.value=state.period;
+      go.textContent=sid()?'Change':'Start';
+      if(sid())msg.textContent='You are '+state.first+' '+state.last+', period '+state.period+'. Everything you answer is saved as you go.';
+      else msg.textContent=SYNC_URL?'Your answers are saved to the class sheet under this name, so use your real name and the same spelling every time.':'Your answers are saved in this browser on this computer.';
+    }
+    go.addEventListener('click',()=>{
+      const first=f.value.trim(),last=l.value.trim(),period=p.value;
+      if(!first||!last||!period){msg.textContent='Type your first name and last name and choose your period.';msg.className='si-msg warn';return;}
+      msg.className='si-msg';
+      const old=sid();
+      const next=Object.assign(state,{first:first.slice(0,40),last:last.slice(0,40),period:period});
+      if(old&&old!==sid()){state=Object.assign(blank(),{first:next.first,last:next.last,period:next.period});}
+      if(!SYNC_URL){save();if(old&&old!==sid()){location.reload();return;}show();return;}
+      msg.textContent='Looking for work you saved before…';go.disabled=true;
+      post(JSON.stringify({action:'load',sid:sid()})).then(j=>{
+        go.disabled=false;
+        let remote=null;
+        try{remote=j&&j.ok&&j.state?JSON.parse(j.state):null;}catch(e){}
+        if(remote&&remote.v===1&&hasWork(remote)&&(!hasWork(state)||remote.updated>state.updated)){
+          state=Object.assign(blank(),remote,{first:state.first,last:state.last,period:state.period});
+          writeLocal();location.reload();return;
+        }
+        save();if(old&&old!==sid()){location.reload();return;}show();
+      }).catch(()=>{
+        go.disabled=false;save();if(old&&old!==sid()){location.reload();return;}show();
+        msg.textContent='Signed in. The class sheet did not answer just now, so your work is saved on this device and will be sent when it does.';
+      });
+    });
+    show();
+  }
+
+  // ---------- question sets: answer everything, then lock in to see the key ----------
+  document.querySelectorAll('.qset').forEach(box=>{
+    const id=box.dataset.set,set=QSETS[id];if(!set)return;
+    let ci=0,peek=false,armTimer=null,armed=false;
+    box.innerHTML='<div class="qs-strip"></div><div class="qs-card"></div>'+
+      '<div class="qs-bar"><button data-a="prev">◀ Previous</button><button data-a="next">Next ▶</button><span class="qs-stat"></span><button class="qs-submit" data-a="submit"></button>'+
+      (TEACHER?'<button class="qs-peek" data-a="peek">Teacher: show the key</button>':'')+'</div><div class="qs-result"></div>';
+    const strip=box.querySelector('.qs-strip'),card=box.querySelector('.qs-card'),stat=box.querySelector('.qs-stat'),sub=box.querySelector('.qs-submit'),res=box.querySelector('.qs-result'),peekBtn=box.querySelector('.qs-peek');
+    set.qs.forEach((q,i)=>{const b=document.createElement('button');b.textContent=i+1;b.title='Question '+(i+1);b.addEventListener('click',()=>{ci=i;render();});strip.appendChild(b);});
+    const nums=[...strip.children];
+    const locked=()=>!!state.submitted[id];
+    const shown=()=>locked()||peek;
+    function render(){
+      const q=set.qs[ci],rev=shown(),K=rev?key().q[q.id]:null,sel=ansOf(q);
+      nums.forEach((b,i)=>{const x=set.qs[i];b.className=(i===ci?'cur ':'')+(rev&&(locked()||isAnswered(x))?(isAnswered(x)&&isCorrect(x)?'right':'wrong'):(isAnswered(x)?'ans':''));});
+      let h='<p class="kicker">Question '+(ci+1)+' of '+set.qs.length+(q.lang==='ap'?' · AP pseudocode':q.lang==='js'?' · App Lab JavaScript':'')+(pickOf(q)>1?' · select two':'')+'</p>';
+      h+='<div class="qs-stem">'+q.stem+'</div>';
+      if(q.code)h+='<pre class="code'+(q.lang==='ap'?' ap':'')+'">'+hl(q.code)+'</pre>';
+      h+='<div class="qs-opts">'+q.opts.map((o,i)=>{
+        let c='qs-opt';
+        if(sel.indexOf(i)>=0)c+=' sel';
+        if(rev){if(K.a.indexOf(i)>=0)c+=' right';else if(sel.indexOf(i)>=0)c+=' wrong';}
+        return '<button class="'+c+'" data-i="'+i+'"'+(rev?' disabled':'')+'><span class="let">'+LET[i]+'</span><span class="txt">'+o+'</span></button>';
+      }).join('')+'</div>';
+      if(rev)h+='<div class="qs-why"><strong>'+(isAnswered(q)&&isCorrect(q)?'Correct.':'The answer is '+K.a.map(i=>LET[i]).join(' and ')+'.')+'</strong> '+K.why+'</div>';
+      else if(pickOf(q)>1)h+='<p class="muted qs-note">Choose two. Click a selected answer again to deselect it.</p>';
+      card.innerHTML=h;
+      const done=set.qs.filter(isAnswered).length,n=set.qs.length;
+      stat.textContent=locked()?'':'answered '+done+' / '+n;
+      if(locked()){sub.hidden=true;}
+      else{
+        sub.hidden=false;sub.disabled=done<n;
+        sub.classList.toggle('armed',armed&&done===n);
+        sub.textContent=done<n?'Answer all '+n+' to unlock the answers ('+(n-done)+' to go)':armed?'Click again to confirm: answers cannot be changed after this':'I am done: lock my answers and show the key';
+      }
+      if(peekBtn)peekBtn.textContent=peek?'Teacher: hide the key':'Teacher: show the key';
+      if(locked()){
+        const sc=setScore(id),miss=set.qs.map((x,i)=>({x:x,i:i})).filter(o=>!isCorrect(o.x));
+        res.innerHTML='<div class="qs-score">Score <b>'+sc+' / '+n+'</b></div><p>Your answers are locked. Go through every question: green is the correct answer, red is the one you chose, and the explanation is underneath.</p>'+
+          (miss.length?'<p class="kicker">Look again at</p><div class="qs-miss">'+miss.map(o=>'<button data-go="'+o.i+'">Q'+(o.i+1)+' · '+esc(o.x.skill)+'</button>').join('')+'</div>':'<p><strong>Every one correct.</strong></p>');
+      }else res.innerHTML='';
+    }
+    card.addEventListener('click',e=>{
+      const b=e.target.closest('.qs-opt');if(!b||shown())return;
+      const q=set.qs[ci],i=+b.dataset.i;let a=ansOf(q).slice();
+      if(pickOf(q)===1)a=[i];
+      else{const k=a.indexOf(i);if(k>=0)a.splice(k,1);else if(a.length<pickOf(q))a.push(i);else return;}
+      state.answers[q.id]=a;armed=false;save();render();
+    });
+    res.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){ci=+b.dataset.go;render();card.scrollIntoView({block:'nearest',behavior:'smooth'});}});
+    box.querySelector('.qs-bar').addEventListener('click',e=>{
+      const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
+      if(a==='prev'){ci=Math.max(0,ci-1);}
+      else if(a==='next'){ci=Math.min(set.qs.length-1,ci+1);}
+      else if(a==='peek'){peek=!peek;}
+      else if(a==='submit'){
+        if(locked()||set.qs.some(x=>!isAnswered(x)))return;
+        // two clicks instead of a confirm() box, which some viewers block
+        if(!armed){armed=true;clearTimeout(armTimer);armTimer=setTimeout(()=>{armed=false;render();},5000);}
+        else{clearTimeout(armTimer);armed=false;state.submitted[id]={t:Date.now(),score:setScore(id)};save();ci=0;}
+      }
+      render();
+    });
+    render();
+  });
+
+  // ---------- sandbox panels ----------
+  let codeTimer=null;
+  function saveSoon(){clearTimeout(codeTimer);codeTimer=setTimeout(save,700);}
+  document.querySelectorAll('[data-sb]').forEach(box=>{
+    const sb=SANDBOXES[box.dataset.sb];if(!sb)return;
+    box.innerHTML='<div class="sb-tasks"><div class="sb-tasklist"></div><div class="sb-prompt"></div>'+
+      '<div class="sb-tools"><button data-a="hint">Hint</button><button data-a="reset">Reset this task</button><button data-a="answer">Show answer</button></div></div>'+
+      '<div class="sb-editor"><div class="sb-model"><p class="kicker">Model answer · one way to do it</p><pre class="code"></pre><div class="sb-tools">'+(TEACHER?'<button data-a="usemodel">Put this in the editor</button>':'')+'<button data-a="hidemodel">Hide</button></div></div><textarea spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>'+
+      '<div class="sb-run"><button class="run" data-a="run">▶ Run</button><button class="chk" data-a="check">Check my code</button><span class="stat"></span></div>'+
+      '<div class="sb-out"><div class="msg">Press Run to see the console. Press Check when you think the task is done.</div></div></div>';
+    const list=box.querySelector('.sb-tasklist'),prompt=box.querySelector('.sb-prompt'),ta=box.querySelector('textarea'),out=box.querySelector('.sb-out'),stat=box.querySelector('.stat');
+    const ansBtn=box.querySelector('[data-a="answer"]');
+    const model=box.querySelector('.sb-model'),modelPre=model.querySelector('pre');
+    let ci=0;
+    sb.tasks.forEach((t,i)=>{
+      const b=document.createElement('button');b.textContent=(i+1)+' · '+t.title;
+      b.addEventListener('click',()=>load(i));
+      if(state.done[t.id])b.classList.add('done');
+      list.appendChild(b);
+    });
+    const btns=[...list.children];
+    function updStat(){stat.textContent=btns.filter(b=>b.classList.contains('done')).length+' / '+sb.tasks.length+' tasks done';}
+    function updAns(){
+      const t=sb.tasks[ci],open=TEACHER||!!state.done[t.id];
+      ansBtn.disabled=!open;ansBtn.style.opacity=open?'':'.55';
+      ansBtn.textContent=open?(model.classList.contains('on')?'Hide answer':'Show answer'):'Answer unlocks when every check passes';
+      ansBtn.title=open?'':'Use the hint. The model answer opens once your own code passes.';
+    }
+    function load(i){
+      ci=i;const t=sb.tasks[i];
+      btns.forEach((b,k)=>b.classList.toggle('cur',k===i));
+      prompt.innerHTML='<p class="kicker">Task '+(i+1)+' of '+sb.tasks.length+' · '+t.title+'</p>'+t.prompt+
+        (t.expect?'<p class="kicker" style="margin-top:.5rem">The console should show</p><div class="sb-expect">'+esc(t.expect.join('\n'))+'</div>':'')+
+        (t.expectScreen?'<p class="kicker" style="margin-top:.5rem">The app screen should show</p><div class="sb-expect">'+esc(t.expectScreen.join('\n'))+'</div>':'')+
+        '<div class="sb-hint">'+esc(t.hint)+'</div>';
+      prompt.querySelectorAll('pre.code').forEach(p=>{p.innerHTML=hl(p.textContent);});
+      const saved=state.code[t.id];
+      ta.value=typeof saved==='string'?saved:t.starter;
+      out.innerHTML='<div class="msg">Press Run to see the console. Press Check when you think the task is done.</div>';
+      box.querySelectorAll('[data-armed]').forEach(x=>{clearTimeout(x._t);delete x.dataset.armed;x.textContent=x.dataset.label;x.style.borderColor='';x.style.color='';});
+      model.classList.remove('on');
+      updAns();updStat();
+    }
+    function keep(){state.code[sb.tasks[ci].id]=ta.value;}
+    ta.addEventListener('input',()=>{keep();saveSoon();});
+    ta.addEventListener('keydown',e=>{
+      if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart;ta.setRangeText('  ',s,ta.selectionEnd,'end');keep();saveSoon();}
+      if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();go2(false);}
+      e.stopPropagation();
+    });
+    function show(r,checking){
+      let h='<p class="kicker">Console</p><div class="con">'+(r.logs&&r.logs.length?esc(r.logs.join('\n')):'<span style="opacity:.6">(nothing was displayed)</span>')+'</div>';
+      if((r.screen&&r.screen.length)||sb.tasks[ci].expectScreen){h+='<p class="kicker">App screen · every setText, in order</p><div class="con scr">'+(r.screen&&r.screen.length?esc(r.screen.join('\n')):'<span style="opacity:.6">(nothing was put on the screen)</span>')+'</div>';}
+      if(r.error){h+='<div class="msg err">'+esc(friendly(r.error))+'</div>';}
+      else if(checking){
+        const all=r.results.every(x=>x.ok);
+        h+=r.results.map(x=>'<div class="res '+(x.ok?'ok':'no')+'">'+esc(x.name)+'</div>').join('');
+        h+='<div class="big" style="color:var(--'+(all?'good':'amber')+')">'+(all?'Task complete. The model answer is now unlocked. Move on to the next one.':'Not yet. Read the lines marked ✗, fix, and check again.')+'</div>';
+        if(all&&!state.done[sb.tasks[ci].id]){state.done[sb.tasks[ci].id]=1;btns[ci].classList.add('done');updStat();updAns();save();}
+      }
+      out.innerHTML=h;
+    }
+    function go2(checking){
+      const t=sb.tasks[ci];keep();save();
+      out.innerHTML='<div class="msg">Running…</div>';
+      runCode(ta.value,checking?t.test:'',{clicks:t.clicks,inputs:t.inputs}).then(r=>show(r,checking));
+    }
+    box.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{
+      const a=b.dataset.a,t=sb.tasks[ci];
+      if(a==='run')go2(false);
+      else if(a==='check')go2(true);
+      else if(a==='hint')prompt.querySelector('.sb-hint').classList.toggle('on');
+      else if(a==='answer'){
+        if(!(TEACHER||state.done[t.id]))return;
+        if(model.classList.contains('on')){model.classList.remove('on');}
+        else{modelPre.innerHTML=hl(key().s[t.id]);model.classList.add('on');model.scrollIntoView({block:'center',behavior:'smooth'});}
+        updAns();
+      }
+      else if(a==='hidemodel'){model.classList.remove('on');updAns();}
+      else if(a==='usemodel'&&TEACHER){ta.value=key().s[t.id];keep();save();model.classList.remove('on');updAns();out.innerHTML='<div class="msg ok">Model answer loaded into the editor. Press Run to see it work.</div>';}
+      else if(a==='reset'){
+        if(b.dataset.armed){
+          clearTimeout(b._t);delete b.dataset.armed;b.textContent=b.dataset.label;b.style.borderColor='';b.style.color='';
+          ta.value=t.starter;delete state.code[t.id];save();prompt.querySelector('.sb-hint').classList.remove('on');
+          out.innerHTML='<div class="msg ok">Starting code restored.'+(state.done[t.id]?' The task stays ticked because you already passed it.':'')+'</div>';
+        }else{
+          b.dataset.label=b.textContent;b.dataset.armed='1';b.textContent='Click again to replace your code';b.style.borderColor='var(--amber)';b.style.color='var(--amber)';
+          b._t=setTimeout(()=>{delete b.dataset.armed;b.textContent=b.dataset.label;b.style.borderColor='';b.style.color='';},4000);
+        }
+      }
+    }));
+    load(0);
+  });
+
+  // ---------- progress board ----------
+  const board=document.getElementById('results');
+  const SBNAMES={sbA:'Sandbox A · Variables',sbB:'Sandbox B · Conditionals',sbC:'Sandbox C · Functions',sbD:'Sandbox D · Parameters and return'};
+  function renderBoard(){
+    if(!board)return;
+    let answered=0,total=0,h='<div class="dt-wrap"><table class="dt"><tr><th>Part</th><th>Done</th><th>Result</th></tr>';
+    const miss=[];
+    Object.keys(QSETS).forEach((id,k)=>{
+      const qs=QSETS[id].qs,a=qs.filter(isAnswered).length;answered+=a;total+=qs.length;
+      const lock=!!state.submitted[id];
+      if(lock)qs.forEach((x,i)=>{if(!isCorrect(x))miss.push('Set '+(k+1)+' Q'+(i+1)+' · '+x.skill);});
+      h+='<tr><td>Set '+(k+1)+' · '+esc(QSETS[id].title)+'</td><td>'+a+' / '+qs.length+' answered</td><td>'+(lock?'<b>'+setScore(id)+' / '+qs.length+'</b>':(a===qs.length?'ready to lock in':'shown when the set is finished'))+'</td></tr>';
+    });
+    let td=0,tt=0;
+    Object.keys(SANDBOXES).forEach(k=>{
+      const ts=SANDBOXES[k].tasks,d=ts.filter(t=>state.done[t.id]).length;td+=d;tt+=ts.length;
+      h+='<tr><td>'+SBNAMES[k]+'</td><td>'+d+' / '+ts.length+' tasks</td><td>'+(d===ts.length?'<b>complete</b>':'')+'</td></tr>';
+    });
+    h+='</table></div><p class="lead"><strong>'+answered+' of '+total+'</strong> questions answered · <strong>'+td+' of '+tt+'</strong> coding tasks passed</p>';
+    if(miss.length)h+='<p class="kicker">Your revision list, from the questions you missed</p><ul class="check">'+miss.map(m=>'<li>'+esc(m)+'</li>').join('')+'</ul>';
+    h+='<div class="sb-tools"><button id="wipebtn">Clear all saved work on this computer</button></div>';
+    board.innerHTML=h;
+    const w=document.getElementById('wipebtn');let t=null;
+    w.addEventListener('click',()=>{
+      if(w.dataset.armed){
+        clearTimeout(syncTimer);dirty=false;
+        try{localStorage.removeItem(NS+'state');}catch(e){}
+        state=blank();location.reload();
+      }else{
+        w.dataset.armed='1';w.textContent='Click again: this removes every answer and all code from this computer';w.style.borderColor='var(--bad)';w.style.color='var(--bad)';
+        t=setTimeout(()=>{delete w.dataset.armed;w.textContent='Clear all saved work on this computer';w.style.borderColor='';w.style.color='';},5000);
+      }
+    });
+  }
+  document.addEventListener('slidechange',renderBoard);
+
+  // self-test: open the file with #selftest to run every model answer through its own checks
+  if(location.hash==='#selftest'){
+    const rows=[];const jobs=[];const K=key();
+    Object.keys(QSETS).forEach(id=>QSETS[id].qs.forEach(q=>{
+      const k=K.q[q.id];
+      if(!k||k.a.length!==pickOf(q)||k.a.some(i=>i<0||i>=q.opts.length)||!k.why)rows.push(q.id+' KEY PROBLEM');
+    }));
+    rows.push('questions='+Object.keys(K.q).length);
+    Object.keys(SANDBOXES).forEach(k=>SANDBOXES[k].tasks.forEach(t=>{
+      jobs.push(runCode(K.s[t.id],t.test,{clicks:t.clicks,inputs:t.inputs}).then(r=>rows.push(t.id+' answer: '+(r.error?'ERROR '+r.error:r.results.map(x=>x.ok?'ok':'FAIL['+x.name+']').join(' ')))));
+      jobs.push(runCode(t.starter,t.test,{clicks:t.clicks,inputs:t.inputs}).then(r=>rows.push(t.id+' starter: '+(r.error?'error (fine)':(r.results.every(x=>x.ok)?'PASSES-UNCHANGED':'not yet')))));
+    }));
+    Promise.all(jobs).then(()=>{window.__selftest=rows.sort().join('\n')+'\nworker='+workerOK;document.title='selftest done';});
+    go(0);
+  } else {
+    const h=parseInt(location.hash.slice(1),10);
+    go(h>=1&&h<=slides.length?h-1:0);
+  }
+})();
+
+</script>
+</body>
+</html>
